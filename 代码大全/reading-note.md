@@ -104,3 +104,103 @@
 ## Creating High-Quality Code
 
 ###### 创建高质量的代码
+
+#### 理想的设计特征（Desirable Characteristics of a Design）
+
+* 最小的复杂度（Minimal complexity）
+* 易于维护（Ease of maintenance）
+* 松散耦合（loose coupling）
+* 可扩展性（extensibility）
+* 可重复性（reusability）
+* 高扇入（high fan-in）
+* 低扇出（low fan-out）
+* 可移植性（portability）
+* 精简性（leanness）
+* 层次性（stratification）
+* 标准技术（Standard techniques）
+
+#### 设计的层次
+
+1. 软件系统（Software System）
+2. 分解为子系统和包（Division into Subsystems or Packages）
+  - *常用的子系统*
+  - 业务规则
+  - 用户界面
+  - 数据库访问
+  - 对系统的依赖性
+
+3. 分解为包中的类（Division into Classes）
+4. 分解为类中的数据和子程序（Division into Routines）
+5. 子程序内部（Internal Routine Design）
+
+#### 常见的设计模式
+
+模式：抽象工厂（Abstract Factory）
+
+描述：通过指定对象组的种类而非单个对象的类型来支持创建一组相关的对象。
+
+***
+
+模式：适配器（Adapter）
+
+描述：吧一个类的接口转变成为另一个接口
+
+***
+
+模式：桥接（Bridge）
+
+描述：把接口和实现分离开来，使它们可以独立地变化
+
+***
+
+模式：组合（Composite）
+
+描述：创建一个包含其他同类对象的对象，使得客户代码可以与最上层对象交互而无须考虑所有的细节对象。
+
+***
+
+模式：装饰器（Decrorator）
+
+描述：给一个对象动态地添加职责，而无须为了每一种可能的职责配置情况去创建特定的子类（派生类）
+
+***
+
+模式：外观（Facade）
+
+描述：为没有提供一致接口的代码提供一个一致的接口。
+
+***
+
+模式：Factory Method
+
+描述：做特定基类的派生类的实力化时，除了在Factory Method内部之外均无须了解各派生对象的具体类型
+
+***
+
+模式：迭代器（Iterator）
+
+描述：提供一个服务对象来顺序地访问一组元素中的各个元素。
+
+***
+
+模式：观察者（Observer）
+
+描述：使一组相关对象相互同步，方法是让另一个对象负责：在这组对象中的任何一个发生改变时，由它把这种变化通知给这个组里的所有对象。
+
+***
+
+模式：单件（Singleton）
+
+描述：为有且仅有一个实例的类提供一种全局访问功能。
+
+***
+
+模式：策略（Strategy）
+
+描述：定义一组算法或者行为，使得它们可以动态地相互替换。
+
+***
+
+模式：模版方式（Template Method）
+
+描述：定义了一个操作的算法结构，但是把部分实现的细节留给子类（派生类）
