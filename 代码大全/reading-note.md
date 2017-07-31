@@ -123,11 +123,11 @@
 
 1. 软件系统（Software System）
 2. 分解为子系统和包（Division into Subsystems or Packages）
-  - *常用的子系统*
-  - 业务规则
-  - 用户界面
-  - 数据库访问
-  - 对系统的依赖性
+    - **常用的子系统**
+    - 业务规则
+    - 用户界面
+    - 数据库访问
+    - 对系统的依赖性
 
 3. 分解为包中的类（Division into Classes）
 4. 分解为类中的数据和子程序（Division into Routines）
