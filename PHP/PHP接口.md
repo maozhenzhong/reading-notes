@@ -106,6 +106,53 @@ elseif($_GET['format'] == 'json')
 > message 	提示信息（邮箱格式不正确；数据返回成功）
 > data 			返回数据
 
+###### PHP接口入口函数：
+
+```PHP
+	/**
+	* 接口入口程序
+	* @param integer $code 状态码
+	* @param string $message 提示信息
+	* @param array $data 数据
+	* @param string $type 格式
+	*/
+	public static function encode($code, $message, $data = array(), $type = self::JSON)
+	{
+		if(!is_numeric($code))
+		{
+			return '';
+		}
+		
+		$type = isset($_GET['format']) ? $_GET['format'] : $type;
+
+		$result = array(
+			'code' => $code,
+			'message' => $message,
+			'data' => $data
+		);
+
+		if($type == 'array')
+		{
+			return $result;
+		}
+		else if($type == 'json')
+		{
+			self::jsonEncode($code, $message, $data);
+			exit;
+		}
+		else if($type == 'xml')
+		{
+			self::xmlEncode($code, $message, $data);
+			exit;
+		}
+		else
+		{
+			//todo other
+			exit;
+		}
+	}
+```
+
 ###### PHP生成json：
 
 ```PHP
@@ -118,7 +165,7 @@ class Response
 	* @param array $data 数据
 	* return string
 	*/
-	public static function json($code, $message, $data = array())
+	public static function jsonEncode($code, $message, $data = array())
 	{
 		if(!is_numeric($code))
 		{
