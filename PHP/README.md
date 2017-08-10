@@ -109,4 +109,115 @@ elseif($_GET['format'] == 'json')
 
 ```
 
+###### PHP生成json数据```json_encode($data)```
 
+> json_encode() //只能生成UTF-8格式的数据
+
+###### 通信数据标准格式
+
+> code 		状态码（200，400等）
+> message 	提示信息（邮箱格式不正确；数据返回成功）
+> data 			返回数据
+
+###### PHP生成json：
+
+```PHP
+class Response
+{
+	/**
+	* 按``json``格式输出数据
+	* @param integer $code 状态码
+	* @param string $message 提示信息
+	* @parma array $data 数据
+	* return string
+	*/
+	public static function json($code, $message, $data = array())
+	{
+		if(!is_numeric($code))
+		{
+			return '';
+		}
+
+		$result = array(
+			'code' => $code,
+			'message' => $message,
+			'data' => $data,
+		);
+
+		return json_encode($result);
+	}
+}
+```
+
+```PHP
+$arr = (
+	'id' => 1,
+	'name' => 'maozhenzhong',
+);
+
+Response::json(200, '数据返回成功', $arr);
+```
+
+###### PHP生成xml：
+
+```PHP
+	/**
+	* 按``xml``格式输出数据
+	* @param integer $code 状态码
+	* @param string $message 提示信息
+	* @parma array $data 数据
+	* return string
+	*/
+	public static function xmlEncode($code, $message, $data = array())
+	{
+		if(!is_numeric($code))
+		{
+			return '';
+		}
+
+		$result = array(
+			'code' => $code,
+			'message' => $message,
+			'data' => $data
+		);
+
+		header("Content-type: text/xml");
+		$xml = '<?xml version="1.0" encoding="UTF_8"?>\n';
+		$xml .= '<root>\n'
+		self::xmlToEncode($result);
+		$xml .= '</root>';
+			return $xml;
+	}
+
+	public static function xmlToEncode($data)
+	{
+		$xml = '';
+		$attr = '';
+
+		foreach($data as $key => $value)
+		{
+			if(is_numeric($key))
+			{
+				$attr = "id=\"{$key}\"";
+				$key = "item";
+			}
+
+			$xml .= "<{$key}>{$attr}";
+			$xml .= is_array($value)?self::xmlToEncode($value):$value;
+			$xml .= "</{$key}>\n";
+		}
+
+		return $xml;
+	}
+```
+
+```PHP
+	$data = array(
+		'id' => 1,
+		'name' => 'MaoZhenzhong'
+	);
+	Response::xmlEncode(200, 'success', $data);
+```
+### 封装通信接口数据方法
+
+###### 
