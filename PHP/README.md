@@ -128,7 +128,7 @@ class Response
 	* 按``json``格式输出数据
 	* @param integer $code 状态码
 	* @param string $message 提示信息
-	* @parma array $data 数据
+	* @param array $data 数据
 	* return string
 	*/
 	public static function json($code, $message, $data = array())
@@ -165,7 +165,7 @@ Response::json(200, '数据返回成功', $arr);
 	* 按``xml``格式输出数据
 	* @param integer $code 状态码
 	* @param string $message 提示信息
-	* @parma array $data 数据
+	* @param array $data 数据
 	* return string
 	*/
 	public static function xmlEncode($code, $message, $data = array())
