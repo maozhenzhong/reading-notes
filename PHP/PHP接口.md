@@ -189,7 +189,7 @@ Response::json(200, '数据返回成功', $arr);
 				$key = "item";
 			}
 
-			$xml .= "<{$key}>{$attr}";
+			$xml .= "<{$key} {$attr}>";
 			$xml .= is_array($value)?self::xmlToEncode($value):$value;
 			$xml .= "</{$key}>\n";
 		}
