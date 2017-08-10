@@ -91,7 +91,8 @@ function xml($data)
 		."<job>" . $data["job"] . "</job>"
 		."<email>" . $data["email"] . "</email>"
 		."<address>" . $data["address"] . "</address>"
-		."<status>" . $data["status"] . "</status>";
+		."<status>" . $data["status"] . "</status>"
+		."</item>";
 
 	echo $result; 
 	exit;
@@ -99,11 +100,11 @@ function xml($data)
 
 if($_GET['format'] == 'xml')
 {
-	xml($arr);
+	xml($data);
 }
-elseif($_GET["format"] == 'json')
+elseif($_GET['format'] == 'json')
 {
-	json($arr);
+	json($data);
 }
 
 ```
