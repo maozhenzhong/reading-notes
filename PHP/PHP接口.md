@@ -148,6 +148,8 @@ Response::json(200, '数据返回成功', $arr);
 ###### PHP生成xml：
 
 ```PHP
+class Response
+{
 	/**
 	* 按``xml``格式输出数据
 	* @param integer $code 状态码
@@ -196,6 +198,7 @@ Response::json(200, '数据返回成功', $arr);
 
 		return $xml;
 	}
+}
 ```
 
 ```PHP
