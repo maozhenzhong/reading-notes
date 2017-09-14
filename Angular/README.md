@@ -1,4 +1,4 @@
-### Angular CLI ng --help
+### Angular CLI ``ng --help``
 
 ```NPM
 Unable to find "@angular/cli" in devDependencies.
