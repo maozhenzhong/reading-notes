@@ -1,3 +1,13 @@
+```
+npm install -g @angular/cli
+
+ng new my-app //my-app 是项目名称，可以自定义
+
+cd my-app
+
+ng serve --open // --open 在浏览器中打开
+```
+
 ### Angular CLI ``ng --help``
 
 ```NPM
