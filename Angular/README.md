@@ -1,3 +1,5 @@
+### 构建angular项目 angular-cli
+
 ```
 npm install -g @angular/cli
 
@@ -6,6 +8,29 @@ ng new my-app //my-app 是项目名称，可以自定义
 cd my-app
 
 ng serve --open // --open 在浏览器中打开
+```
+
+### 创建命令 ng g [generate]
+
+```
+ng generate component test //构建一个 component, generate的简写‘g’, test是名称
+
+ng g service test -m app.module
+```
+
+### 打包命令
+
+```
+  ng build //项目打包
+
+  ng build --aot //打包，并且编译
+
+  ng build -prod //去掉调试功能压缩
+
+  ls -alh dist/ //查看文件目录
+
+  du -h /dist //查看文件的大小
+
 ```
 
 ### Angular CLI ``ng --help``
