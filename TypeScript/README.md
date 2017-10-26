@@ -255,6 +255,8 @@ doSomething(array2);
 + 箭头表达式（（）=>,箭头表达式最大的优点是消除this关键字）
   + 用来声明匿名函数，消除传统匿名函数的this指针问题
 
++ forEach() for in and for of
+
 
 ```TypeScript
 /*
@@ -296,4 +298,204 @@ function getStock3(name: string){
       console.log('name is : ' + this.name);
     },1000);
 }
+```
+
+```TypeScript
+//忽略掉属性
+  var myArray = [1,2,3,4];
+
+  myArray.desc = 'four number';
+
+  myArray.forEach(value => console.log(value));
+```
+
+```TypeScript
+//显示属性
+  var myArray = [1,2,3,4];
+
+  myArray.desc = 'four number';
+
+  for(var i in myArray)
+  {
+    console.log(i);
+    console.log(myArray[i]);
+  }
+```
+
+```TypeScript
+//忽略掉属性，可以打断循环
+  var myArray = [1,2,3,4];
+
+  myArray.desc = 'four number';
+
+  for(var i of myArray)
+  {
+    if(i > 2) break;
+    console.log(i);
+    console.log(myArray[i]);
+  }
+```
+
+## 面向对象的特性
+
++ 类（Class）
+  + 类是TypeScript的核心，使用TypeScript开发时，大部分代码都是写在类里面的。
++ 泛型（generic）
+  + 参数化的类型，一般用来限制集合的内容
++ 接口（Interface）
+  + 用来建立某种代码约定，使得其它开发者在调用某个方法或创建新的类时，必须遵循接口所定义的代码约定。
++ 模块（Module）
+  + 模块可以帮助开发者将代码分割为可重用的单元。开发者可以自己决定将模块中的哪些资源（类、方法、变量）暴露出去供外部使用，哪些资源只在模块内使用。
++ 注解（annotation）
+  + 注解为程序的元素（类、方法、变量）加上更直观更明了的说明，这些说明信息与程序的业务逻辑无关，而是供指定的工具或框架使用的。
++ 类型定义文件（\*.d.ts）
+  + 类型定义文件用来帮助开发者在TypeScript中使用已有的JavaScript的工具包。如：JQuery
+
+
+```TypeScript
+class Person {
+  name;
+
+  eat(){
+    console.log('Im eating');
+  }
+}
+
+var person1 = new Person();
+person1.name = 'Batman';
+person1.eat();
+
+var person2 = new Person();
+person2.name = 'Superman';
+person2.eat();
+```
+
+```TypeScript
+//访问控制符
+
+／**
+* public //可以在类的外部访问
+* private //只能在累的内部访问
+* protected //受保护的，只能在类的内部，和类的子类中访问
+*／
+
+class Person {
+  public name;
+  private age;
+  protected sayHi: function (){
+
+  }
+}
+```
+
+```TypeScript
+
+//类的构造函数
+
+／**
+*
+*
+*／
+
+class Person {
+  //构造函数不能在外部访问，在实例化一个类的时候必须为它指定一个属性值
+  constructor(public name: string) {
+    this.name = name;
+  }
+
+  eat(){
+    console.log(this.name);
+  }
+}
+
+//类的继承 extends, super
+class Employee extends Person {
+  public code: string;
+
+  constructor (name: string, code: string){
+    super(name);
+    this.code = code;
+  }
+
+  public work(){
+
+  }
+}
+
+var e = new Employee('Lin Wei', 1);
+e.eat();
+e.code;
+e.work();
+
+//尖括号中的Person是指定数组只能放该类中的值，不能放其他值。
+var workers: Array<Person> = [];
+workers[0] = new Person('Zhangsan');
+workers[1] = new Employee('Lisi', '2');
+
+//接口 方法参数的声明
+
+interface IPerson {
+  name: string;
+  age: number;
+}
+
+class Person() {
+  constructor(public config: IPerson){
+
+  }
+}
+
+var p1 = new Person({
+  name: 'Zhangsan',
+  age: 18
+  });
+
+//接口 声明方法,必须实现接口的属性，和方法
+interface Animal{
+  eat();
+}
+
+class Sheep implements Animal {
+  eat(){
+    console.log('I eat grass');
+  }
+}
+
+class Tiger implements Animal {
+  eat(){
+    console.log('I eat meat');
+  }
+}
+
+//模块（Module）export import
+```TypeScript
+//export 对外暴露数据
+//
+//a.ts
+export var prop1;
+var prop2;
+
+export function func()
+{
+
+}
+
+function func2()
+{
+
+}
+
+export class c1 {
+
+}
+
+class c2 {
+
+}
+
+//b.ts
+import {prop1} from '.a';
+console.log(prop1);
+
+
 ```
