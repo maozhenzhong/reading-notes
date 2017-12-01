@@ -317,7 +317,7 @@ a{Click me}
 
 ```html
 <!-- a{click}+b{here} -->
-<a href=""click></a><b>here<b>
+<a href="">click</a><b>here<b>
 
 <!-- a>{click}+b{here} -->
 <a href="">click<b>here</b></a>
