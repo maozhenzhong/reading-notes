@@ -14,3 +14,4 @@
 3. 类(class)、属性(attributes、[attribute="name"])、和伪类(:hover, :focus, :active)`权重值为0010`
 4. 元素和伪元素(::before、::after)`权重值为0001`
 5. 通配符(*)`权重值为0000`
+6. `!impontant`权重为infinity
