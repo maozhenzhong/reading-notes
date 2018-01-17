@@ -1,0 +1,20 @@
+var file = inputs[i].files;
+if (file[0]) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file[0]);
+    reader.onload = function(e) {
+        var event = this;
+        console.log(event.result);
+        $.ajax({
+            type: 'POST',
+            url: 'http://10.145.0.05/goods/addGoodsBase64',
+            dataType: "json",
+            data: {
+                "base64": event.result,
+            },
+            success: function(data) {
+                console.log(data);
+            }
+        });
+    }
+}
