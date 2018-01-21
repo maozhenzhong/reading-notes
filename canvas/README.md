@@ -22,9 +22,10 @@
 
 ### 绘制矩形
 
+#### rect(x, y, width, height);绘制一个左上角坐标为（x,y），宽高为width以及height的矩形。
+
 #### `canvas`有三种方法绘制矩形：
 
->
 > 1、fillRect(x,y,width,height);//绘制一个填充的矩形
 >
 > 2、strokeRect(x,y,width,height);//绘制一个矩形边框
