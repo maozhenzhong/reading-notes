@@ -198,3 +198,109 @@
     }
     drawTriangle(canvas);
 ```
+
+### 图像绘制颜色
+
+#### fillStyle = color //设置图形的填充颜色。
+
+#### strokeStyle = color//设置图形轮廓的颜色。
+
+```JavaScript
+    var canvas = document.getElementById('canvas');
+    function draw(canvas){
+        if(canvas.getContext){
+            var ctx = canvas.getContext('2d');
+
+            for(var i = 0; i < 6; i++){
+                for(var j = 0; j < 6; j++){
+                    ctx.fillStyle = 'rgb(' + Math.floor(255 - 42.5 * i) + ',' + Math.floor(255 - 42.5 * j) + ',0)';
+                    ctx.fillRect(25 * i, 25 * j, 25, 25);
+                }
+            }
+        }
+    }
+    draw(canvas);
+```
+
+### globalAlpha = transparencyValue //这个属性影响到 canvas 里所有图形的透明度，有效的值范围是 0.0 （完全透明）到 1.0（完全不透明），默认是 1.0。
+
+### 线型 Line styles
+
+#### lineWidth = value //这个属性设置当前绘线的粗细。属性值必须为正数。默认值是1.0。
+
+#### lineCap = type //属性 lineCap 的值决定了线段端点显示的样子。它可以为下面的三种的其中之一：butt，round 和 square。默认是 butt。
+
+#### lineJoin = type //属性值决定了图形中两线段连接处所显示的样子。它可以是这三种之一：round, bevel 和 miter。默认是 miter。
+
+#### miterLimit = value //限制当两条线相交时交接处最大长度；所谓交接处长度（斜接长度）是指线条交接处内角顶点到外角顶点的长度。
+
+#### getLineDash()//返回一个包含当前虚线样式，长度为非负偶数的数组。
+
+### 用 setLineDash 方法和 lineDashOffset 属性来制定虚线样式. setLineDash 方法接受一个数组，来指定线段与间隙的交替；lineDashOffset 属性设置起始偏移量.
+
+#### setLineDash(segments)//设置当前虚线样式。
+
+#### lineDashOffset = value//设置虚线样式的起始偏移量。
+
+#### createLinearGradient(x1, y1, x2, y2)//createLinearGradient 方法接受 4 个参数，表示渐变的起点 (x1,y1) 与终点 (x2,y2)。
+
+#### createRadialGradient(x1, y1, r1, x2, y2, r2)//createRadialGradient 方法接受 6 个参数，前三个定义一个以 (x1,y1) 为原点，半径为 r1 的圆，后三个参数则定义另一个以 (x2,y2) 为原点，半径为 r2 的圆。
+
+#### 创建出 canvasGradient 对象后，我们就可以用 addColorStop 方法给它上色了。
+
+> gradient.addColorStop(position, color)
+> addColorStop 方法接受 2 个参数，position 参数必须是一个 0.0 与 1.0 之间的数值，表示渐变中颜色所在的相对位置。例如，0.5 表示颜色会出现在正中间。color 参数必须是一个有效的 CSS 颜色值（如 #FFF， rgba(0,0,0,1)，等等）。
+
+```JavaScript
+    var lineargradient = ctx.createLinearGradient(0,0,150,150);
+    lineargradient.addColorStop(0,'white');
+    lineargradient.addColorStop(1,'black');
+```
+
+#### createPattern(image, type)//该方法接受两个参数。Image 可以是一个 Image 对象的引用，或者另一个 canvas 对象。Type 必须是下面的字符串值之一：repeat，repeat-x，repeat-y 和 no-repeat。
+
+```JavaScript
+    function draw() {
+        var ctx = document.getElementById('canvas').getContext('2d');
+
+        // 创建新 image 对象，用作图案
+        var img = new Image();
+        img.src = 'images/wallpaper.png';
+        img.onload = function(){
+
+            // 创建图案
+            var ptrn = ctx.createPattern(img,'repeat');
+            ctx.fillStyle = ptrn;
+            ctx.fillRect(0,0,150,150);
+
+        }
+    }
+```
+
+### 阴影 Shadows
+
+#### shadowOffsetX = float//shadowOffsetX 和 shadowOffsetY 用来设定阴影在 X 和 Y 轴的延伸距离，它们是不受变换矩阵所影响的。负值表示阴影会往上或左延伸，正值则表示会往下或右延伸，它们默认都为 0。
+
+#### shadowOffsetY = float//shadowOffsetX 和 shadowOffsetY 用来设定阴影在 X 和 Y 轴的延伸距离，它们是不受变换矩阵所影响的。负值表示阴影会往上或左延伸，正值则表示会往下或右延伸，它们默认都为 0。
+
+#### shadowBlur = float//shadowBlur 用于设定阴影的模糊程度，其数值并不跟像素数量挂钩，也不受变换矩阵的影响，默认为 0。
+
+#### shadowColor = color//shadowColor 是标准的 CSS 颜色值，用于设定阴影颜色效果，默认是全透明的黑色。
+
+### 绘制文本
+
+#### fillText(text, x, y [, maxWidth])//在指定的(x,y)位置填充指定的文本，绘制的最大宽度是可选的.
+
+#### strokeText(text, x, y [, maxWidth])//在指定的(x,y)位置绘制文本边框，绘制的最大宽度是可选的.
+
+### 文本样式
+
+#### font = value//当前我们用来绘制文本的样式. 这个字符串使用和 CSS font 属性相同的语法. 默认的字体是 10px sans-serif。
+
+#### textAlign = value//文本对齐选项. 可选的值包括：start, end, left, right or center. 默认值是 start。
+
+#### textBaseline = value//基线对齐选项. 可选的值包括：top, hanging, middle, alphabetic, ideographic, bottom。默认值是 alphabetic。
+
+#### direction = value//文本方向。可能的值包括：ltr, rtl, inherit。默认值是 inherit。
+
+#### measureText()//将返回一个 TextMetrics对象的宽度、所在像素，这些体现文本特性的属性。
