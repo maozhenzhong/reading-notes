@@ -560,9 +560,9 @@ span { ... }
 
 ### 目录 Table of Contents
 
-+ [类型](#type)
-+ [引用](#references)
-+ [对象](#objects)
++ [类型](#type类型)
++ [引用](#references引用)
++ [对象](#objects对象)
 + [数组](#arrays)
 + [解构](#destructuring)
 + [字符串](#strings)
@@ -595,7 +595,7 @@ span { ... }
 
 用四个空格来代替制表符（tab） -- 这是唯一能保证在所有环境下获得一致展现的方法。
 
-#### 类型 Types
+#### Types类型
 
 **基本类型:** 相当于传值(JavaScript对象都提供了字面量)，使用字面量创建对象。
 
@@ -614,7 +614,7 @@ span { ... }
 + `Array`
 + `Function`
 
-#### 引用 References 
+#### References引用 
 
 + 对所有的引用使用 `const` ；不要使用 `var`。eslint: `prefer-const`, `no-const-assign`
 
@@ -627,7 +627,7 @@ span { ... }
 > 注意 `let` 和 `const` 都是块级作用域。
 
 
-#### 对象 Objects
+#### Objects对象
 
 + 使用字面量语法创建对象。 eslint: `no-new-object`
 + 当创建带有动态属性名称的对象时使用计算的属性名称。
@@ -761,7 +761,7 @@ const copy = { ...original, c: 3 }; // copy => { a: 1, b: 2, c: 3 }
 const { a, ...noA } = copy; // noA => { b: 2, c: 3 }
 ```
 
-#### 数组 Arrays
+#### Arrays数组 
 
 + 使用字面量创建数组。 eslint: `no-array-constructor`
 + 在向数组添加元素时使用 `Array#push` 替代直接赋值。
@@ -896,7 +896,7 @@ const numberInArray = [
 ];
 ```
 
-#### 解构 Destructuring
+#### Destructuring解构
 
 + 当访问和使用对象的多个属性时，请使用对象解构。eslint: `prefer-destructuring` jscs:  `requireObjectDestructuring`
 
@@ -960,7 +960,7 @@ function processInput(input) {
 const { left, top } = processInput(input);
 ```
 
-#### 字符串 Strings
+#### Strings字符串
 
 + 字符串使用单引号 ''。 eslint: `quotes` jscs: `validateQuoteMarks`
 
@@ -1035,7 +1035,7 @@ const foo = '\'this\' is "quoted"';
 const foo = `my name is '${name}'`;
 ```
 
-#### 函数 Functions
+#### Functions函数
 
 使用命名函数表达式而不是函数声明。 eslint: `func-style` jscs:  `disallowFunctionDeclarations`
 
@@ -1293,7 +1293,7 @@ console.log(
 );
 ```
 
-#### 箭头函数 Arrow Functions
+#### Arrow Functions箭头函数 
 
 + 当您必须使用匿名函数（如在传递一个内联回调时），请使用箭头函数表示法。 eslint: `prefer-arrow-callback`, `arrow-spacing` jscs: `requireArrowFunctions`
 
@@ -1431,7 +1431,7 @@ const itemHeight = (item) => {
 };
 ```
 
-#### 类 Classes & 构造函数 Constructors
+#### Classes类 & Constructors构造函数
 
 + 总是使用 `class`。避免直接操作 `prototype`。
 
@@ -1590,7 +1590,7 @@ class Foo {
 }
 ```
 
-#### 模块 Modules
+#### Modules模块
 
 + 总是使用模块 (`import`/`export`) 而不是其他非标准模块系统。你可以编译为你喜欢的模块系统。
 
@@ -1736,7 +1736,7 @@ import fooSass from 'foo.scss';
 import barCss from 'bar.css';
 ```
 
-### 迭代器 Iterators 和 生成器 Generators
+### Iterators迭代器 和 Generators生成器
 
 + 不要使用 iterators（迭代器） 。请使用高阶函数，例如 `map()` 和 `reduce()` 等，而不是像  `for-in` 或 `for-of` 这样的循环。 eslint: `no-iterator` `no-restricted-syntax`
 
@@ -1839,7 +1839,7 @@ const foo = function* () {
 };
 ```
 
-#### 属性 Properties
+#### Properties属性
 
 + 使用 点语法(.) 来访问对象的属性。 eslint: `dot-notation` jscs: `requireDotNotation`
 
@@ -1882,7 +1882,7 @@ const binary = 2 ** 10;
 
 ```
 
-#### 变量 Variables
+#### Variables变量
 
 + 总是使用 `const` 或 `let` 来声明变量。 不这样做会导致产生全局变量。 我们希望避免污染全局命名空间。 eslint: `no-undef prefer-const`
 
@@ -2135,7 +2135,7 @@ function example() {
 }
 ```
 
-#### 比较运算符 Comparison Operators 和 等号 Equality
+#### Comparison Operators比较运算符  和 Equality等号
 
 + 使用 `===` 和 `!==` 优先于 `==` 和 `!=`。 eslint: `eqeqeq`
 + 诸如 if 语句之类的条件语句使用 ToBoolean 抽象方法来强制求值它们的表达式，并始终遵循以下简单规则：
@@ -2299,7 +2299,7 @@ if ((a || b) && c) {
 const bar = a + b / c * d;
 ```
 
-#### 代码块 Blocks
+#### Blocks代码块
 
 + 使用大括号包裹所有的多行代码块。 eslint: `nonblock-statement-body-position`
 
@@ -2410,7 +2410,7 @@ function dogs(x) {
 }
 ```
 
-#### 控制语句 Control Statements
+#### Control Statements控制语句 
 
 + 如果您的控制语句(`if`, `while` 的)太长或超过最大行长度，那么每个（分组）条件可以放单独一行。逻辑运算符应该放在每行起始处。
 
@@ -2465,7 +2465,7 @@ if (foo === 123 && bar === 'abc') {
 }
 ```
 
-#### 注释 Comments
+#### Comments注释
 
 + 多行注释使用 `/** ... */`。
 
@@ -2599,7 +2599,7 @@ class Calculator extends Abacus {
 
 **注：** 还有 **// XXX:** 注释，如果代码中有该标识，说明标识处代码虽然实现了功能，但是实现的方法有待商榷，希望将来能改进，要改进的地方会在说明中简略说明。部分 IDE 有这些注释的收集视图，例如任务（task）视图，TODO视图等，在项目发布前，检查一下任务视图是一个很好的习惯。
 
-#### 空白 Whitespace
+#### Whitespace空白
 
 + 使用 4 个空格作为缩进。 eslint: `indent` jscs: `validateIndentation`
 
@@ -2918,7 +2918,7 @@ $.ajax({
     .fail(() => console.log('You have failed this city.'));
 ```
 
-#### 逗号 Commas
+#### Commas逗号
 
 + 行开头处不要实用使用逗号。 eslint: `comma-style` jscs: `requireCommaBeforeLineBreak`
 
@@ -3049,7 +3049,7 @@ createHero(
 );
 ```
 
-#### 分号 Semicolons
+#### Semicolons分号
 
 + 当然要使用分号 eslint: `semi` jscs: `requireSemicolons`
 
@@ -3094,7 +3094,7 @@ function foo() {
 }
 ```
 
-#### 类型转换 Type Casting & Coercion
+#### Type Casting & Coercion类型转换 
 
 + 在声明语句的开始处就执行强制类型转换.
 + 字符串: eslint: `no-new-wrappers`
@@ -3174,7 +3174,7 @@ const hasAge = Boolean(age);
 const hasAge = !!age;
 ```
 
-#### 命名规则 Naming Conventions
+#### Naming Conventions命名规则 
 
 + 避免使用单字母名称。使你的命名具有描述性。 eslint: `id-length`
 
@@ -3357,7 +3357,7 @@ const requests = [
 ];
 ```
 
-#### 存取器 Accessors
+#### Accessors存取器
 
 + 属性的存取器函数不是必须的。
 + 別使用 JavaScript 的 getters/setters，因为它们会导致意想不到的副作用，而且很难测试，维护和理解。相反，如果要使用存取器函数，使用 getVal() 及 setVal(‘hello’)。
@@ -3419,7 +3419,7 @@ class Jedi {
 }
 ```
 
-#### 事件 Events
+#### Events事件
 
 + 将绑定数据到事件时 (不论是 DOM 事件还是其他像Backbone一类的事件), 传递 hash 而不是原始值。 这将允许后续的贡献者不用查找和更新事件的每一个处理程序就可以给事件添加更多的数据。例如，不要使用下边的：
 
