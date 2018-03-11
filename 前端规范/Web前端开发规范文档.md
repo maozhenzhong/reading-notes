@@ -5,8 +5,8 @@
 ### 目录 Table of Contents
 
 + [规范目的](#user-content-规范目的)
-+ [HTML书写规范](#user-content-html书写规范)
-+ [CSS书写规范](#user-content-css书写规范)
++ [HTML书写规范](#user-content-HTML书写规范)
++ [CSS书写规范](#user-content-CSS书写规范)
 + [JavaScript书写规范](#user-content-JavaScript书写规范)
 + [编辑器配置](#user-content-IDE编辑器配置)
 
@@ -3553,7 +3553,7 @@ $sidebar.find('ul').hide();
 ```
 
 
-## 编辑器配置
+## IDE编辑器配置
 
 将你的编辑器按照下面的配置进行设置，以避免常见的代码不一致和差异：
 
