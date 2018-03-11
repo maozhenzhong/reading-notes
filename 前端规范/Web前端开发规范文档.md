@@ -5,10 +5,10 @@
 ### 目录 Table of Contents
 
 + [规范目的](#user-content-规范目的)
-+ [HTML书写规范](#user-content-HTML书写规范)
-+ [CSS书写规范](#user-content-CSS书写规范)
-+ [JavaScript书写规范](#user-content-JavaScript书写规范)
-+ [编辑器配置](#user-content-IDE编辑器配置)
++ [HTML书写规范](#user-content-html书写规范)
++ [CSS书写规范](#user-content-css书写规范)
++ [JavaScript书写规范](#user-content-javascript书写规范)
++ [编辑器配置](#user-content-ide编辑器配置)
 
 ### 黄金定律 
 
