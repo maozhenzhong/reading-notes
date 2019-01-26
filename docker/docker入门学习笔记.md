@@ -193,5 +193,18 @@ For more examples and ideas, visit:
 
 这就需要用到了Dockerfile文件。它是一个文本文件，用来配置image。Docker根据该文件生成二进制的image文件。
 
-### 十一、制作自己的Docker容器
+### 十一、为什么要使用Docker
+	
++ 更高效的利用系统资源
++ 更快速的启动时间
++ 一致的运行环境
++ 持续交付和部署
++ 更轻松的迁移
++ 更轻松的维护和扩展
++ 对比传统虚拟机总结
 
+### 十二、Docker包括三个基本概念
+
++ 镜像（Image）
++ 容器（Container）
++ 仓库（Repository）
