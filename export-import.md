@@ -10,6 +10,6 @@
 
 5. 当一个文件里出现n多个 export 导出很多模块，导入时除了一个一个导入，也可以用import * as example
 
-> 作者：陈嘻嘻啊
-> 链接：https://www.jianshu.com/p/287e0bb867ae
+> 作者：陈嘻嘻啊  
+> 链接：https://www.jianshu.com/p/287e0bb867ae  
 > 來源：简书
