@@ -252,7 +252,7 @@ export default class YourCompnent extends Vue{
 		this.count += n
 	}
 	
-	@Emit('reset)
+	@Emit('reset')
 	resetCount() {
 		this.count = 0
 	}
