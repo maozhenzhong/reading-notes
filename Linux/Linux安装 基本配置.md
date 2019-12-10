@@ -19,6 +19,7 @@
 * [nginx 安装](#nginxInstall)
 * [nginx 配置说明](#nginxConf)
 * [nginx 常用命令](#nginxCommand)
+* [虚拟机网络使用技巧](#network)
 
 ## Linux centOS7安装后的基本操作
 
@@ -263,3 +264,28 @@ netstat -tln
 # 解决nslookup命令找不到
 yum install bind-utils -y
 ```
+
+### <a id="network">虚拟机网络使用技巧</a>
+
+虚拟机为我们提供了三种网络工作模式：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式）
+
+**桥接模式：**就是将主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信。
+
+在桥接的作用下，类似于把物理主机虚拟为一个交换机，所有桥接设置的虚拟机连接到这个交换机的一个接口上，物理主机也同样插在这个交换机当中。
+
+虚拟机IP地址需要与主机在同一个网段，如果需要联网，则网关与DNS需要与主机网卡一致。
+
+![](./WechatIMG5.png)
+![](./WechatIMG4.png)
+
+**NAT(地址转换模式)：**在NAT模式下，虚拟主机需要借助虚拟NAT设备和虚拟DHCP服务器，使得虚拟机可以联网。虚拟机和物理机共有一个IP地址。
+
+> 注：虚拟机使用NAT模式时，Linux系统要配置成动态获取IP。
+
+![](./WechatIMG3.png)
+
+**Host-Only 模式：** 将虚拟机与外网隔开，使得虚拟机成为一个独立的系统，只与主机相互通讯。相当于NAT模式去除了虚拟NAT地址转换功能。
+
+> 注：虚拟机使用**Host-Only**模式时，Linux系统要配置成动态获取IP
+
+![](./JetbrainsCrack-release-enc.jar)
