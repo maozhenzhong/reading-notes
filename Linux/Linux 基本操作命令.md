@@ -1,0 +1,394 @@
+# Linux 基本操作命令
+
+---
+
+## Linux伪终端和shell提示符
+
+### 认识`shell`
+
+Shell俗称壳，它提供了用户与内核进行交互操作的一种接口，它接受用户输入的命令并把它送入内核去执行
+
+Shell实际上是一个命令解释器，它通过解释用户输入的命令并把它传输给系统内核去执行。
+
+Shell有自己的编程语言用于对命令的编辑，它允许用户编写由shell命令组成的程序。shell编程语言具有普通编程语言的很多特点，比如它也有循环结构和分支控制结构等，用这种编程语言编写的shell程序与其他应用程序具有同样的效果。
+
+**内部命令：** 在系统启动时就调入内存，是常驻内存的，所以执行效率高
+
+**外部命令：**是系统软件的功能，用户需要时才从硬盘中读入内存
+
+区分内部外部命令的方法`type`
+
+使用`type`命令语法type 要检查的命令
+
+```
+[root@localhost ~]# type pwd
+# 显示结果
+pwd is a shell builtin
+```
+
+```
+[root@localhost ~]# type cat
+# 显示结果
+cat is /usr/bin/cat
+```
+
+### shell 提示符“#”与“$”的区别
+
+```
+[root@localhost ~]# # “#”号表示root用户登录，管理员账号
+```
+
+```
+# 切换账户
+[root@localhost ~]# su - spring
+# 显示结果
+Last login: Sun Dec 15 21:26:56 CST 2019 on :0
+```
+
+```
+[spring@localhost ~]$ # "$"号表示普通用户登录
+```
+
+上面各位置对应的内容代表的意思如下：
+
+**用户名@主机名 当前工作目录(~表示当前用户的家目录)**
+
+### 认识`shell`
+
+```
+# 查看shell类型
+[root@localhost ~]# cat /etc/shells
+# 结果
+/bin/sh
+/bin/bash
+/usr/bin/sh
+/usr/bin/bash
+/bin/tcsh
+/bin/csh
+```
+
+具体你使用的是哪一个，取决于你的用户配置，也就是说你可以看一下/etc/passwd 文件的每一行的最后一个字段
+
+```
+[root@root ~]# head -1 /etc/passwd
+# 结果
+root:x:0:0:root:/root:/bin/bash
+```
+
+## 基本命令操作
+
+命令格式为：
+
+命令 【选项】【参数】 对象
+
+* 命令：具体执行的命令，比如：pwd、head
+* 选项：会影响到命令的一些行为操作，通常以“-”“--”实现
+* 参数：命令作用的对象
+
+### 1. 基本命令之 ls
+
+作用：查看当前目录下有哪些文件（list）
+
+语法:ls 目录/文件 ，如果什么也不加，那么查看的是当前目录下的内容 常用选项:
+
+```
+[root@root ~]# ls 后面什么也不加
+```
+
+==》-l 列出文件的详细信息，如创建者，创建时间，文件有什么权限等
+
+```
+[root@root ~]# ls -l a.txt
+```
+
+![文件基本信息](file.png)
+
+第一个字符表示的是文件类型: 
+
+* d: 目录文件
+* l: 链接文件 
+* b: 块设备文件 
+* c: 字符设备文件 
+* p: 管道文件
+* -: 表示普通文件
+
+Linux 系统中不同的颜色代表了不同的文件类型
+
+|   颜色   | 代表内容     |  举例                |
+|:-------:|:-----------:|:--------------------:|
+|  蓝色    |  目录       |  /etc                 |
+|  黑色    |  文件       |  /etc/passwd          |
+|  浅蓝色  |  链接       |  /etc/grub2.cfg       |
+|  红色    |  压缩包     |  boot.tar.gz          |
+|  绿色    |  可执行文件  |  /etc/init.d/network |
+|  黑底黄色 |  设备文件   |  /dev/sda             |
+
+==》-a 列出目 录下所有的文件，包括以“.“开头的隐藏文件(linux 下隐藏文件是以 . 开头的，如果存在 2 个点代表存在着父目 录,1 个点表示当前目录)
+
+```
+[root@localhost ~]# ls -a
+.   anaconda-ks.cfg  .bash_logout   .bashrc  .config  .dbus                 .tcshrc
+..  .bash_history    .bash_profile  .cache   .cshrc   initial-setup-ks.cfg  .viminfo
+```
+
+==》-d 查看目录(不查看目录里面内容) 
+
+```
+[root@localhost ~]# ls -d /etc
+/etc
+[root@localhost ~]# ls -d -l /etc
+drwxr-xr-x. 140 root root 8192 Dec 20 19:37 /etc [root@xuegod63 ~]# ls -ld /etc
+drwxr-xr-x. 140 root root 8192 Dec 20 19:37 /etc
+```
+==》-S 以文件的大小进行排序
+
+```
+[root@localhost ~]# ls -lS
+```
+
+ls -l 和 ll 这两个命令是等价的 
+
+```
+[root@localhost ~]# ls -l /mnt
+     total 32
+-rwxrw-rw-. 1 root root 4074 Sep 7 20:19 vimrc.zip
+-rw-r--r--. 1 root root -rw-------. 1 root root -rw-r--r--. 1 root root -rw-r--r--. 1 root root -rwxr-xr-x. 1 root root
+2063 Sep 19 07:02 initial-setup-ks.cfg 2015 Sep 18 22:02 anaconda-ks.cfg
+26 Dec 11 22:26 a.sed 25 Dec 14 22:08 a.txt
+21 Dec 11 20:42 test1.sh
+  total 4
+-rw-r--r--. 1 root root 646 Nov 27 16:46 menu.sh
+[root@xuegod63 ~]# ll /mnt
+[root@xuegod63 ~]# type ll
+ll is aliased to `ls -l --color=auto'
+```
+
+### 别名的使用
+
+```
+# 定义一个别名
+[root@root ~]# vim /etc/sysconfig/network-scripts/ifcfg-ens33
+[root@root ~]# alias vimens33='vim /etc/sysconfig/network-scripts/ifcfg-ens33'
+[root@root ~]# vimens33
+```
+
+```
+# 删除别名
+[root@root ~]# unalias vimens33
+[root@root ~]# vimens33
+
+# 输出
+bash: vimens33: command not found...
+```
+
+设置别名永久生效:
+
+==》当前用户
+
+```
+[root@root ~]# vim /root/.bashrc 
+# 插入以下内容
+alias vimenss33="vim /etc/sysconfig/network-scripts/ifcfg-ens33" 
+
+# 执行一下命令
+[root@root ~]# source /root/.bashrc
+[root@root ~]# vimenss33
+```
+
+==》全局使用
+
+```
+[root@root ~]# vim /etc/bashrc 
+
+#在文件最后插入
+alias vimenss33="vim /etc/sysconfig/network-scripts/ifcfg-ens33" 
+
+测试:
+
+[root@root ~]# su - spring
+Last login: Wed Dec 20 21:46:46 CST 2017 on pts/1
+[hr@root ~]$ vimens33
+```
+
+### 基本命令之 `cd`
+
+作用：切换目录(change directory)
+
+说明:直接输入 cd 表示回到当前用户的宿主(家)目录 
+
+```
+[root@root ~]# cd /etc/sysconfig/network-scripts/ 
+[root@root network-scripts]# cd
+[root@root ~]# cd ~
+cd .. 表示返回到上级目录位置，也就是父目录
+cd . 表示进入到当前目录
+[root@root ~]# pwd
+/root
+[root@root ~]# cd ..
+[root@root /]# pwd
+/
+[root@root /]# cd .
+[root@root /]#
+cd - #表示返回切换前的目录
+[root@root /]# cd /etc/sysconfig/network-scripts/ 
+[root@root network-scripts]# cd -
+/
+```
+
+### 历史命令之 `history`
+
+命令:history
+
+4 个快速查找 linux 历史命令的技巧:
+
+* 方法 1: 光标上下键
+* 方法 2: ctrl+r -》输入某条命令的关键字-》找出来对应的命令，按右光标键
+* 方法 3: !数字 // 执行历史命令中第 N 条命令
+* 方法 4: !字符串 // 搜索历史命令中最近一个以 xxxx 字符开头的命令，例如!vim
+
+### Liunx 快捷键
+
+都是用 Ctrl+下面的单词， ^表示 Ctrl 
+
+**^C**  
+终止前台运行的程序 , 如:ping g.cn 后，想停止按下 Ctrl+C 
+
+**^D**  
+退出 等价 exit
+ 
+**^L**  
+清屏与 clear 功能一样
+
+**^R**  
+搜索历史命令，可以利用好关键词
+
+**!$**   
+引用上一个命令的最后一个参数
+
+命令补全使用 **tab** 键，tab 只能补全命令和文件(前提这个命令或文件要存在)
+
+### 系统时间管理
+
+在 Linux 中有硬件时钟与系统时钟等两种时钟。硬件时钟是指主机板上的时钟设备，也就是通常可在 BIOS 画 面设定的时钟;系统时钟则是指 kernel 中 的时钟;所有 Linux 相关指令与函数都是读取系统时钟的设定
+当 Linux 启动时，系统时钟会去读取硬件时钟的设定，之后系统时钟即独立运作
+
+```
+# 查看硬件时间
+[root@localhost ~]# hwclock
+Sun 15 Dec 2019 11:10:08 PM CST  -0.931344 seconds
+```
+
+```
+# 查看系统时间
+[root@localhost ~]# date
+Sun Dec 15 23:10:56 CST 2019
+```
+
+时区:
+
+* UTC (Universal Time Coordinated):世界标准时间 
+* GMT (Greenwich Mean Time):格林尼治时间
+* CST (China standard Time):中国标准时间
+
+### 修改时间
+
+```
+[root@localhost ~]# date '+%Y-%m-%d %H:%M:%S'
+2019-12-15 23:18:50
+```
+
+### 使用 time 命令测试一个命令运行的时间
+
+time 作用:一般用来测量一个命令的运行时间 
+
+使用方法:time 在后面直接跟上命令和参数
+
+```
+[root@localhost ~]# time ls -l /etc/
+
+real	0m0.032s
+user	0m0.001s
+sys 	0m0.028s
+```
+
+说明:
+
+* `real`: 实际使用时间 
+* `user`: 用户状态使用的时间 
+* `sys` : 内核状态使用的时间
+
+### 帮助命令的使用
+
+man 手册:查看命令的手册页
+
+```
+man date
+```
+
+使用-h 或--help 查看命令选项
+
+```
+[root@localhost ~]# find --help 
+[root@localhost ~]# help time
+```
+
+## 开机命令及7个启动级别
+
+常用的几个关机，重启命令：
+
+* shutdown
+* init
+* reboot
+* poweroff
+
+### shutdown
+
+作用:关机，重启，定时关机  
+语法:shutdown [选项]  
+参数：
+
+* -r => 重新启动计算机
+* -h =>关机
+* -h 时间 =>定时关机
+
+```
+shutdown -h 1 //1分钟后关机，1是以分钟为单位。
+shutdown now //立即关机
+shutdown -H now // 挂起CPU
+shutdown -r now // 立即重启
+shutdown -c // 取消关机
+```
+
+7 个启动级别
+作用:切换系统运行级别
+语法:init 0-6
+Linux 7 个启动级别:
+
+* 0 系统停机模式，系统默认运行级别不能设置为 0，否则不能正常启动，机器关的
+* 1 单用户模式，root 权限，用于系统维护，禁止远程登陆，就像 Windows 下的安全模式登录 2 多用户模式，没有 NFS 和网络支持
+* 3 完整的多用户文本模式，有 NFS 和网络，登陆后进入控制台命令行模式
+* 4 系统未使用，保留一般不用，在一些特殊情况下可以用它来做一些事情。例如在笔记本电脑的电池用尽时，可以 切换到这个模式来做一些设置
+* 5 图形化模式，登陆后进入图形 GUI 模式，X Window 系
+* 6 重启模式，默认运行级别不能设为 6，否则不能正常启动。运行 init 6 机器就会重启
+
+```
+ [root@localhost ~]# init 0 # 关机
+ [root@localhost ~]# init 3 # 进入 3 级别字符界面
+ [root@localhost ~]# init 5 # 进入 5 级别图形界面
+```
+
+设置默认的运行界别
+
+centos7 不再使用/etc/inittab 文件进行默认的启动级别配置，而使用比 sysvinit 的运行级更为自由的 target 替 代。
+
+第 3 运行级用 multi-user.target 替代。  
+第 5 运行级用 graphical.target 替代。  
+
+设置默认第三启动级别
+
+```
+[root@localhost ~]# systemctl set-default multi-user.target 设置默认第五启动级别
+[root@localhost ~]# systemctl set-default graphical.target
+[root@localhost ~]# runlevel
+N 5 # 表示从 N 级别切换到了 5 级别
+```

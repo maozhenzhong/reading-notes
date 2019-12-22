@@ -19,7 +19,10 @@
 * [nginx 安装](#nginxInstall)
 * [nginx 配置说明](#nginxConf)
 * [nginx 常用命令](#nginxCommand)
+* [nginx 反向代理](#reverseProxy)
 * [虚拟机网络使用技巧](#network)
+* [Git 安装](#installGit)
+* [配置Git账户](#settingGit)
 
 ## Linux centOS7安装后的基本操作
 
@@ -147,7 +150,7 @@ yum update
 ```
 # 创建普通用户
 useradd test
-password test 
+passwd test 
 新的 密码：# 根据提示输入密码
 ```
 
@@ -158,7 +161,7 @@ tail -1 /etc/sudoers
 text ALL=(ALL)ALL
 ```
 
-### <a id="nginxInstall">nginx安装</a>
+### <a id="nginxInstall">Nginx 安装</a>
 
 ```
 # 安装Linux系统下的一些辅助工具
@@ -195,7 +198,7 @@ yum list |grep nginx
 yum install nginx
 ```
 
-### <a id="nginxConf">nginx配置说明</a>
+### <a id="nginxConf">Nginx配置说明</a>
 
 ```
 # 查看nginx安装到那里
@@ -217,11 +220,61 @@ cd /etc/nginx/conf.d
 vim default.conf
 ```
 
-### <a id="nginxCommand">nginx 常用命令</a>
+### <a id="#reverseProxy">Nginx 反向代理</a>
+
+```
+vim /etc/nginx/conf.d/default.conf
+```
+
+```
+server {
+    listen       80;
+    server_name  localhost;
+
+    access_log      /root/md_vue_access.log;
+    error_log       /root/md_vue_error.log;
+
+
+    client_max_body_size 75M;
+
+
+    location / {
+
+        root /root/dist;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+
+    }
+    
+    error_log    /root/dist/error.log    error;
+
+}
+```
+
+```
+# 继续修改配置
+vim /etc/nginx/nginx.conf
+将第一行改为 user root;
+```
+
+改好后，重启nginx服务
+
+```
+systemctl reload nginx.service
+```
+
+
+
+### <a id="nginxCommand"> Nginx 常用命令</a>
 
 ```
 # nginx 服务运行情况查询
 ps aux | grep nginx
+```
+
+```
+# 设置开机启动
+sudo systemctl enable nginx
 ```
 
 ```
@@ -265,6 +318,28 @@ netstat -tln
 yum install bind-utils -y
 ```
 
+### <a id="nginxError">Nginx报错</a>
+
+Nginx报错：nginx: [error] invalid PID number "" in "/run/nginx.pid" 解决方法
+
+服务器重启之后，执行 nginx -t 是OK的，然而在执行 nginx -s reload 的时候报错
+
+```
+nginx: [error] invalid PID number "" in "/run/nginx.pid"
+```
+
+解决方法：
+
+需要先执行
+
+```
+nginx -c /etc/nginx/nginx.conf
+
+nginx.conf文件的路径可以从nginx -t的返回中找到。
+
+nginx -s reload
+```
+
 ### <a id="network">虚拟机网络使用技巧</a>
 
 虚拟机为我们提供了三种网络工作模式：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式）
@@ -289,3 +364,115 @@ yum install bind-utils -y
 > 注：虚拟机使用**Host-Only**模式时，Linux系统要配置成动态获取IP
 
 ![](./JetbrainsCrack-release-enc.jar)
+
+
+### <a id="sshError">mac终端连接服务器报错</a>
+
+解决方法
+
+```
+ssh-keygen -R +192.168.1.110 #输入服务器的IP
+```
+
+
+### <a id="installGit">Git 安装</a>
+
+```
+$ git --version
+git version 1.8.3.1
+```
+
+**Remove old git**
+
+```
+sudo yum remove git*
+```
+
+**Add IUS CentOS 7 repo**
+
+```
+sudo yum -y install  https://centos7.iuscommunity.org/ius-release.rpm
+sudo yum -y install  git2u-all
+```
+
+Check git version after installing git2u-all package
+
+
+```
+$ git --version
+git version 2.16.5
+```
+As confirmed, the current version of Git is 2.16.5
+
+**Install the latest git from source**
+
+In this method, you’ll be tasked with building git from source code. Install dependency packages required
+
+```
+sudo yum groupinstall "Development Tools"
+sudo yum -y install wget perl-CPAN gettext-devel perl-devel  openssl-devel  zlib-devel
+```
+
+Download and install git
+
+```
+export VER="2.22.0"
+wget https://github.com/git/git/archive/v${VER}.tar.gz
+tar -xvf v${VER}.tar.gz
+rm -f v${VER}.tar.gz
+cd git-*
+sudo make install
+```
+
+Check new version of git installed on your system
+
+```
+$ git --version
+git version 2.22.0
+```
+You should now have the latest release of Git on your CentOS 7 server.
+
+### <a id="settingGit">配置Git账户</a>
+
+```
+# 配置账户和密码
+git config --global user.name "Your Name"
+git config --global user.email "email@example.com"
+```
+
+```
+# 查看配置是否生效
+git config --list
+```
+
+```
+# 配置SSH用于拉取远程仓库
+[root@localhost nginx]# ssh-keygen -t rsa -C 'maozhenzhong2008@163.com'
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa):
+Created directory '/root/.ssh'.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:+PsGn3+Fyu+NAF2KhWdfmqxEsuEd4V7RYQjq1MwR7Vs maozhenzhong2008@163.com
+The key's randomart image is:
++---[RSA 2048]----+
+|           += o+.|
+|          =o.+...|
+|         o++O o .|
+|       .o. & O E |
+|      . S.= * B. |
+|       ..  o o. .|
+|        .o oo. . |
+|         .+ o..o |
+|        .o...++ .|
++----[SHA256]-----+
+```
+
+```
+# id_rsa：私钥 ，id_rsa.pub：公钥
+```
+
+
