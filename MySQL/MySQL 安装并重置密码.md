@@ -162,7 +162,7 @@ pid-file = /usr/local/mysql/data/mysqld.pid
 拷贝`my_default.cnf`到`/etc/my.cnf`
 
 ```
-cp /usr/local/mysql/support-files/my-default.cnf /etc/my.cnf
+cp /usr/local/mysql/support-files/my_default.cnf /etc/my.cnf
 ```
 
 ### 初始化 mysqld
@@ -313,4 +313,62 @@ mysql> flush privileges;
 
 ```
 ALERT USER 'root'@'localhost' IDENTIFIED BY '#新密码#';
+```
+
+### Mac os安装MySQL数据库，系统提示mysql: command not found该怎么办
+
+```
+# 打开Terminal，输入：
+[root@localhost ~]# sudo su - # 进入系统管理员管理目录
+Password: #输入你的用户密码
+```
+
+```profile
+[root@localhost ~]#  vim /etc/profile 
+
+# 接着就进入到vim编辑界面
+
+# System-wide .profile for sh(1)
+
+if [ -x /usr/libexec/path_helper ]; then
+        eval `/usr/libexec/path_helper -s`
+fi
+
+if [ "${BASH-no}" != "no" ]; then
+        [ -r /etc/bashrc ] && . /etc/bashrc
+fi
+
+# 新增配置变量
+export PATH=$PATH:/usr/local/mysql/bin
+```
+
+按下esc键，退出编辑状态
+
+```
+[root@localhost ~]# wq! # 表示保存并强制退出
+```
+
+```
+[root@localhost ~]# source /etc/profile # 表示设置立即生效，当然你关闭后重启也是一样的道理
+```
+
+```
+[root@localhost ~]# mysql # 回车 进行测试
+
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+```
+
+### Mac OS 的MySQL,重置root用户密码
+
+停止 mysql server
+
+```bash
+[root@localhost ~]# sudo /usr/local/mysql/bin/mysqld_safe --skip-grant-tables
+```
+
+```
+[root@localhost ~]# sudo /usr/local/mysql/bin/mysql -u root
+[root@localhost ~]# UPDATE mysql.user SET authentication_string=PASSWORD('新密码') WHERE User='root';
+[root@localhost ~]# FLUSH PRIVILEGES;
+[root@localhost ~]# \q
 ```

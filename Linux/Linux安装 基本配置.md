@@ -14,6 +14,7 @@
 
 * [配置防火墙和 SELinux](#firewall)
 * [配置静态IP并能够通过 SSH 连接](#ip)
+* [设置光盘镜像](#chmod)
 * [更换 yum 源](#yumSource)
 * [创建一个普通用户并赋予 root 权限](#root)
 * [nginx 安装](#nginxInstall)
@@ -30,39 +31,43 @@
 
 ```
 # 关闭防火墙
-systemctl stop firewalld.service
-systemctl disable firewalld.service
+[root@localhost ~]# systemctl stop firewalld.service
+[root@localhost ~]# systemctl disable firewalld.service
 ```
 
 ```
 # 关闭selinux
-sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
+[root@localhost ~]# sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
+```
+
+```
+[root@localhost ~]# vim /etc/sysconfig/selinux
+
+# SELINUX=enforcing # 默认开启修改为以下内容禁用
+SELINUX=disabled
+
+# 重启生效
+
+[root@localhost ~]# setenforce 0 # 临时关闭
+Permissive
+[root@localhost ~]# setenforce 1 # 临时开启
+[root@localhost ~]# getenforce # 查看当前情况
 ```
 
 ```
 # 安装依赖软件
-yum install -y zsh git
+[root@localhost ~]# yum install -y zsh git
 ```
 
 ```
 # 通过以下方式安装
-sh -c "$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-```
-
-```
-# 选择主题和插件
-vi ~/.zshrc
-```
-
-```
-# 安装中文man手册
-yum install -y man-pages-zh-CN
+[root@localhost ~]# sh -c "$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 ```
 
 ```
 # 同步时间
-yum  install -y ntpdate 
-echo ntpdate -u ntp.api.bz >>/etc/rc.local
+[root@localhost ~]# yum  install -y ntpdate 
+[root@localhost ~]# echo ntpdate -u ntp.api.bz >>/etc/rc.local
 ```
 
 ### <a id="ip">配置静态IP并能够通过SSH连接</a>
@@ -70,14 +75,22 @@ echo ntpdate -u ntp.api.bz >>/etc/rc.local
 > IP: 192.168.2.198  
 > 路由器: 192.168.2.1
 
-```
+```bash
+# 查看IP地址命令：
+[root@localhost ~]# ip a
+[root@localhost ~]# ip addr
+[root@localhost ~]# ifconfig
+[root@localhost ~]# setup
+[root@localhost ~]# nmtui
+[root@localhost ~]# nmcli # 修改IP
+[root@localhost ~]# nm-connection-editor
 # 在网卡中配置静态IP
-vi /etc/sysconfig/network-scripts/ifcfg-eth0
+[root@localhost ~]# vi /etc/sysconfig/network-scripts/ifcfg-eth0
 ```
 
 ```
 # 将ONBOOT=no改为yes，保存后重启网络服务即可
-service network restart
+[root@localhost ~]# service network restart
 ```
 
 ```
@@ -88,38 +101,63 @@ GATEWAY=192.168.2.1 # 与宿主机保持一致
 NETMASK=255.255.255.0
 ```
 
+> 查看IP地址信息：将 BOOTPROTO设置为 dhcp，系统会自动分配IP相关信息
+
 **如果要访问外网还要配置 DNS**
 
-> DNS1=192.168.2.1  
-> DNS2=8.8.8.8
+> DNS1=192.168.2.1  # 如果不知道公共的DNS则可以使用默认网关GATEWAY地址
+> DNS2=8.8.8.8 # google
+> DNS3=223.5.5.5 # 阿里云
 
 ```
 # 配置完之后保存重启网络
-service network restart
+[root@localhost ~]# service network restart
 ```
 
 ```
 # 通过 SSH 连接
-ssh root@192.168.2.20
+[root@localhost ~]# ssh root@192.168.2.20
 ```
+
+### <a id="chmod">设置光盘镜像</a>
+
+```
+# 开机自动挂载
+[root@localhost ~]# echo "dev/sr0 /mnt iso9660 defaults 0 0" >> /etc/fstab 
+
+# dev/sr0 光盘光驱
+# /mnt 挂载的目录
+# iso9660 光盘镜像格式
+# defaults 0 0 默认挂载选项
+
+# 单次挂载
+[root@localhost ~]# 
+
+# 查看挂载情况
+[root@localhost ~]# mount -a
+mount: dev/sr0 is write-protected, mounting read-only
+mount: special device dev/sr0 does not exist
+```
+
+
 
 ### <a id="yumSource">更换 yum 源</a>
 
 ```
 # 打开centos的yum文件夹
-cd /etc/yum.repos.d/
+[root@localhost ~]# cd /etc/yum.repos.d/
 ```
 
 ```
 # 备份
-mv CentOS-Base.repo CentOS-Base.repo.backup
+[root@localhost ~]# mv CentOS-Base.repo CentOS-Base.repo.backup
 ```
 
 **可以下载后更改名称**
 
 ```
 # 用wget 下载
-wget http://mirrors.aliyun.com/repo/Centos-7.repo
+[root@localhost ~]# wget http://mirrors.aliyun.com/repo/Centos-7.repo
 ```
 
 > 如果wget命令不生效，说明还没有安装wget工具，输入yum -y install wget 回车进行安装。  
@@ -127,55 +165,58 @@ wget http://mirrors.aliyun.com/repo/Centos-7.repo
 
 ```
 # 替换系统原来的repo文件
-mv CentOS-7.repo CentOS-Base.repo
+[root@localhost ~]# mv CentOS-7.repo CentOS-Base.repo
 ```
 
 **也可以下载直接更换名称**
 
 ```
-wget -O CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+[root@localhost ~]# wget -O CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
 ```
 
 ```
 # 执行yum源更新命令
-yum clean all
+[root@localhost ~]# yum clean all
 
-yum makecache
+[root@localhost ~]# yum makecache
 
-yum update
+[root@localhost ~]# yum update
+
+# 查看配置好的包
+[root@localhost yum.repos.d]# yum repolist
 ```
 
 ### <a id="root">创建一个普通用户并赋予 root 权限</a>
 
 ```
 # 创建普通用户
-useradd test
-passwd test 
+[root@localhost ~]# useradd test
+[root@localhost ~]# passwd test 
 新的 密码：# 根据提示输入密码
 ```
 
 ```
 # 将该用户加入root组
-echo 'test ALL=(ALL)ALL'>> /etc/sudoers
-tail -1 /etc/sudoers
-text ALL=(ALL)ALL
+[root@localhost ~]# echo 'test ALL=(ALL)ALL'>> /etc/sudoers
+[root@localhost ~]# tail -1 /etc/sudoers
+[root@localhost ~]# text ALL=(ALL)ALL
 ```
 
 ### <a id="nginxInstall">Nginx 安装</a>
 
 ```
 # 安装Linux系统下的一些辅助工具
-yum -y install gcc gcc-c++ autoconf pcre-devel make automake wget httpd-tools vim
+[root@localhost ~]# yum -y install gcc gcc-c++ autoconf pcre-devel make automake wget httpd-tools vim
 ```
 
 ```
 # 查看nginx 版本
-yum list | grep nginx
+[root@localhost ~]# yum list | grep nginx
 ```
 
 ```
 # 建立nginx源的配置文件
-vim /etc/yum.repos.d/nginx.repo
+[root@localhost ~]# vim /etc/yum.repos.d/nginx.repo
 ```
 
 ```
@@ -190,40 +231,40 @@ gpgkey=https://nginx.org/keys/nginx_signing.key
 
 ```
 # 再次查看是否有最新稳定版本
-yum list |grep nginx
+[root@localhost ~]# yum list |grep nginx
 ```
 
 ```
 # 安装nginx
-yum install nginx
+[root@localhost ~]# yum install nginx
 ```
 
 ### <a id="nginxConf">Nginx配置说明</a>
 
 ```
 # 查看nginx安装到那里
-rpm -ql nginx
+[root@localhost ~]# rpm -ql nginx
 
 # 或者
-whereis nginx
+[root@localhost ~]# whereis nginx
 ```
 
 ```
 # 查看nginx.conf
-cd /etc/nginx
-vi nginx.conf
+[root@localhost ~]# cd /etc/nginx
+[root@localhost ~]# vi nginx.conf
 ```
 
 ```
 # 查看 default.conf
-cd /etc/nginx/conf.d
-vim default.conf
+[root@localhost ~]# cd /etc/nginx/conf.d
+[root@localhost ~]# vim default.conf
 ```
 
 ### <a id="#reverseProxy">Nginx 反向代理</a>
 
 ```
-vim /etc/nginx/conf.d/default.conf
+[root@localhost ~]# vim /etc/nginx/conf.d/default.conf
 ```
 
 ```
@@ -253,14 +294,14 @@ server {
 
 ```
 # 继续修改配置
-vim /etc/nginx/nginx.conf
+[root@localhost ~]# vim /etc/nginx/nginx.conf
 将第一行改为 user root;
 ```
 
 改好后，重启nginx服务
 
 ```
-systemctl reload nginx.service
+[root@localhost ~]# systemctl reload nginx.service
 ```
 
 
@@ -269,53 +310,53 @@ systemctl reload nginx.service
 
 ```
 # nginx 服务运行情况查询
-ps aux | grep nginx
+[root@localhost ~]# ps aux | grep nginx
 ```
 
 ```
 # 设置开机启动
-sudo systemctl enable nginx
+[root@localhost ~]# sudo systemctl enable nginx
 ```
 
 ```
 # 启动nginx
-sudo systemctl start nginx
+[root@localhost ~]# sudo systemctl start nginx
 
 # 或者
-systemctl start nginx.service
+[root@localhost ~]# systemctl start nginx.service
 ```
 
 ```
 # 重启nginx
-sudo systemctl restart nginx
+[root@localhost ~]# sudo systemctl restart nginx
 ```
 
 ```
 # 重新加载，因为一般重新配置之后，不希望重启服务，这时可以使用重新加载
-sudo systemctl reload nginx
+[root@localhost ~]# sudo systemctl reload nginx
 ```
 
 ```
 # 停止nginx
-nginx -s stop # 立即停止服务
-nginx -s quit # 从容器中停止服务
-killall nginx # 杀死进程
-systemctl stop nginx.service # systemctl 停止
+[root@localhost ~]# nginx -s stop # 立即停止服务
+[root@localhost ~]# nginx -s quit # 从容器中停止服务
+[root@localhost ~]# killall nginx # 杀死进程
+[root@localhost ~]# systemctl stop nginx.service # systemctl 停止
 ```
 
 ```
 # 查看nginx是否安装成功
-nginx -v
+[root@localhost ~]# nginx -v
 ```
 
 ```
 # 查看开启的端口号
-netstat -tln
+[root@localhost ~]# netstat -tln
 ```
 
 ```
 # 解决nslookup命令找不到
-yum install bind-utils -y
+[root@localhost ~]# yum install bind-utils -y
 ```
 
 ### <a id="nginxError">Nginx报错</a>
@@ -325,7 +366,7 @@ Nginx报错：nginx: [error] invalid PID number "" in "/run/nginx.pid" 解决方
 服务器重启之后，执行 nginx -t 是OK的，然而在执行 nginx -s reload 的时候报错
 
 ```
-nginx: [error] invalid PID number "" in "/run/nginx.pid"
+[root@localhost ~]# nginx: [error] invalid PID number "" in "/run/nginx.pid"
 ```
 
 解决方法：
@@ -333,11 +374,11 @@ nginx: [error] invalid PID number "" in "/run/nginx.pid"
 需要先执行
 
 ```
-nginx -c /etc/nginx/nginx.conf
+[root@localhost ~]# nginx -c /etc/nginx/nginx.conf
 
-nginx.conf文件的路径可以从nginx -t的返回中找到。
+[root@localhost ~]# nginx.conf文件的路径可以从nginx -t的返回中找到。
 
-nginx -s reload
+[root@localhost ~]# nginx -s reload
 ```
 
 ### <a id="network">虚拟机网络使用技巧</a>
@@ -350,20 +391,20 @@ nginx -s reload
 
 虚拟机IP地址需要与主机在同一个网段，如果需要联网，则网关与DNS需要与主机网卡一致。
 
-![](./WechatIMG5.png)
-![](./WechatIMG4.png)
+![](./img/WechatIMG5.png)
+![](./img/WechatIMG4.png)
 
 **NAT(地址转换模式)：**在NAT模式下，虚拟主机需要借助虚拟NAT设备和虚拟DHCP服务器，使得虚拟机可以联网。虚拟机和物理机共有一个IP地址。
 
 > 注：虚拟机使用NAT模式时，Linux系统要配置成动态获取IP。
 
-![](./WechatIMG3.png)
+![](./img/WechatIMG3.png)
 
 **Host-Only 模式：** 将虚拟机与外网隔开，使得虚拟机成为一个独立的系统，只与主机相互通讯。相当于NAT模式去除了虚拟NAT地址转换功能。
 
 > 注：虚拟机使用**Host-Only**模式时，Linux系统要配置成动态获取IP
 
-![](./JetbrainsCrack-release-enc.jar)
+![](./img/JetbrainsCrack-release-enc.jar)
 
 
 ### <a id="sshError">mac终端连接服务器报错</a>
@@ -371,35 +412,35 @@ nginx -s reload
 解决方法
 
 ```
-ssh-keygen -R +192.168.1.110 #输入服务器的IP
+[root@localhost ~]# ssh-keygen -R +192.168.1.110 #输入服务器的IP
 ```
 
 
 ### <a id="installGit">Git 安装</a>
 
 ```
-$ git --version
+[root@localhost ~]#  git --version
 git version 1.8.3.1
 ```
 
 **Remove old git**
 
 ```
-sudo yum remove git*
+[root@localhost ~]# sudo yum remove git*
 ```
 
 **Add IUS CentOS 7 repo**
 
 ```
-sudo yum -y install  https://centos7.iuscommunity.org/ius-release.rpm
-sudo yum -y install  git2u-all
+[root@localhost ~]# sudo yum -y install  https://centos7.iuscommunity.org/ius-release.rpm
+[root@localhost ~]# sudo yum -y install  git2u-all
 ```
 
 Check git version after installing git2u-all package
 
 
 ```
-$ git --version
+[root@localhost ~]#  git --version
 git version 2.16.5
 ```
 As confirmed, the current version of Git is 2.16.5
@@ -409,25 +450,25 @@ As confirmed, the current version of Git is 2.16.5
 In this method, you’ll be tasked with building git from source code. Install dependency packages required
 
 ```
-sudo yum groupinstall "Development Tools"
-sudo yum -y install wget perl-CPAN gettext-devel perl-devel  openssl-devel  zlib-devel
+[root@localhost ~]# sudo yum groupinstall "Development Tools"
+[root@localhost ~]# sudo yum -y install wget perl-CPAN gettext-devel perl-devel  openssl-devel  zlib-devel curl-devel expat-devel
 ```
 
 Download and install git
 
 ```
-export VER="2.22.0"
-wget https://github.com/git/git/archive/v${VER}.tar.gz
-tar -xvf v${VER}.tar.gz
-rm -f v${VER}.tar.gz
-cd git-*
-sudo make install
+[root@localhost ~]# export VER="2.24.1"
+[root@localhost ~]# wget https://github.com/git/git/archive/v${VER}.tar.gz
+[root@localhost ~]# tar -xvf v${VER}.tar.gz
+[root@localhost ~]# rm -f v${VER}.tar.gz
+[root@localhost ~]# cd git-*
+[root@localhost ~]# sudo make install
 ```
 
 Check new version of git installed on your system
 
 ```
-$ git --version
+[root@localhost ~]#  git --version
 git version 2.22.0
 ```
 You should now have the latest release of Git on your CentOS 7 server.
@@ -436,13 +477,13 @@ You should now have the latest release of Git on your CentOS 7 server.
 
 ```
 # 配置账户和密码
-git config --global user.name "Your Name"
-git config --global user.email "email@example.com"
+[root@localhost ~]# git config --global user.name "Your Name"
+[root@localhost ~]# git config --global user.email "email@example.com"
 ```
 
 ```
 # 查看配置是否生效
-git config --list
+[root@localhost ~]# git config --list
 ```
 
 ```
