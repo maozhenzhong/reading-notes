@@ -2,15 +2,75 @@
 
 ---
 
-## Linux伪终端和shell提示符
+## 目录
 
-### 认识`shell`
+* [Linux终端介绍Shell提示符Bash Shell 基本语法](#shell)
+* [基本命令使用 ls、pwd、cd、history](#basicCommands)
+* [查看系统和BIOS硬件时间](#time)
+* [Linux 如何获得帮助](#help)
+* [开关机命令及7个启动级别](#switchLevel)
+* [实战：设置服务器来电后自动开机](#actualCall)
+* [实战：设置服务器定时开机](#actualCombat)
+
+## 内容
+
+### <a href="#shell" id="shell">Linux终端介绍Shell提示符Bash Shell 基本语法</a>
+
+#### 登录LINUX终端
+
+两种终端仿真器：
+
+1. GNOME桌面的GHOME Terminal
+2. KDE桌面的Konsole Terminal
+
+远程连接终端工具：Xshell、CRT。
+
+通过`tty`命令看到当前所属的虚拟终端
+
+```
+[root@spring ~]# tty
+/dev/pts/0
+```
+
+```
+# 终端之间的通信
+[root@spring ~]# echo spring > /dev/tty1
+```
+
+```
+# 在所有的终端上进行一次广播
+[root@spring ~]# wall 'hello word'
+[root@spring ~]#
+Broadcast message from root@spring (pts/0) (Fri Jan 24 02:00:09 2020):
+
+hello word
+```
+
+```
+# 十分钟后关机
+[root@spring ~]# shutdown +10
+Shutdown scheduled for Fri 2020-01-24 02:11:11 CST, use 'shutdown -c' to cancel.
+[root@spring ~]#
+Broadcast message from root@spring (Fri 2020-01-24 02:01:11 CST):
+The system is going down for power-off at Fri 2020-01-24 02:11:11 CST!
+```
+
+```
+# 取消关机
+[root@spring ~]# shutdown -c
+Broadcast message from root@spring (Fri 2020-01-24 02:01:38 CST):
+The system shutdown has been cancelled at Fri 2020-01-24 02:02:38 CST!
+```
+
+#### 认识 `shell`
 
 Shell俗称壳，它提供了用户与内核进行交互操作的一种接口，它接受用户输入的命令并把它送入内核去执行
 
 Shell实际上是一个命令解释器，它通过解释用户输入的命令并把它传输给系统内核去执行。
 
 Shell有自己的编程语言用于对命令的编辑，它允许用户编写由shell命令组成的程序。shell编程语言具有普通编程语言的很多特点，比如它也有循环结构和分支控制结构等，用这种编程语言编写的shell程序与其他应用程序具有同样的效果。
+
+![shell流程图](./img/shell.png)
 
 **内部命令：** 在系统启动时就调入内存，是常驻内存的，所以执行效率高
 
@@ -32,7 +92,7 @@ pwd is a shell builtin
 cat is /usr/bin/cat
 ```
 
-### shell 提示符“#”与“$”的区别
+### shell 提示符`#`与`$`的区别
 
 ```
 [root@localhost ~]# # “#”号表示root用户登录，管理员账号
@@ -75,7 +135,7 @@ Last login: Sun Dec 15 21:26:56 CST 2019 on :0
 root:x:0:0:root:/root:/bin/bash
 ```
 
-## 基本命令操作
+### <a href="#basicCommands" id="basicCommands">基本命令使用 ls、pwd、cd、history</a>
 
 命令格式为：
 
@@ -85,7 +145,7 @@ root:x:0:0:root:/root:/bin/bash
 * 选项：会影响到命令的一些行为操作，通常以“-”“--”实现
 * 参数：命令作用的对象
 
-### 1. 基本命令之 ls
+### 1. 基本命令之 `ls`
 
 作用：查看当前目录下有哪些文件（list）
 
@@ -101,7 +161,7 @@ root:x:0:0:root:/root:/bin/bash
 [root@root ~]# ls -l a.txt
 ```
 
-![文件基本信息](file.png)
+![文件基本信息](./img/file.png)
 
 第一个字符表示的是文件类型: 
 
@@ -123,7 +183,7 @@ Linux 系统中不同的颜色代表了不同的文件类型
 |  绿色    |  可执行文件  |  /etc/init.d/network |
 |  黑底黄色 |  设备文件   |  /dev/sda             |
 
-==》-a 列出目 录下所有的文件，包括以“.“开头的隐藏文件(linux 下隐藏文件是以 . 开头的，如果存在 2 个点代表存在着父目 录,1 个点表示当前目录)
+==> -a 列出目 录下所有的文件，包括以“.“开头的隐藏文件(linux 下隐藏文件是以 . 开头的，如果存在 2 个点代表存在着父目 录,1 个点表示当前目录)
 
 ```
 [root@localhost ~]# ls -a
@@ -131,7 +191,7 @@ Linux 系统中不同的颜色代表了不同的文件类型
 ..  .bash_history    .bash_profile  .cache   .cshrc   initial-setup-ks.cfg  .viminfo
 ```
 
-==》-d 查看目录(不查看目录里面内容) 
+==> -d 查看目录(不查看目录里面内容) 
 
 ```
 [root@localhost ~]# ls -d /etc
@@ -140,7 +200,7 @@ Linux 系统中不同的颜色代表了不同的文件类型
 drwxr-xr-x. 140 root root 8192 Dec 20 19:37 /etc [root@xuegod63 ~]# ls -ld /etc
 drwxr-xr-x. 140 root root 8192 Dec 20 19:37 /etc
 ```
-==》-S 以文件的大小进行排序
+==> -S 以文件的大小进行排序
 
 ```
 [root@localhost ~]# ls -lS
@@ -183,7 +243,7 @@ bash: vimens33: command not found...
 
 设置别名永久生效:
 
-==》当前用户
+==> 当前用户
 
 ```
 [root@root ~]# vim /root/.bashrc 
@@ -195,7 +255,7 @@ alias vimenss33="vim /etc/sysconfig/network-scripts/ifcfg-ens33"
 [root@root ~]# vimenss33
 ```
 
-==》全局使用
+==> 全局使用
 
 ```
 [root@root ~]# vim /etc/bashrc 
@@ -210,11 +270,11 @@ Last login: Wed Dec 20 21:46:46 CST 2017 on pts/1
 [hr@root ~]$ vimens33
 ```
 
-### 基本命令之 `cd`
+#### 基本命令之 `cd`
 
 作用：切换目录(change directory)
 
-说明:直接输入 cd 表示回到当前用户的宿主(家)目录 
+说明：直接输入 cd 表示回到当前用户的宿主(家)目录 
 
 ```
 [root@root ~]# cd /etc/sysconfig/network-scripts/ 
@@ -235,7 +295,7 @@ cd - #表示返回切换前的目录
 /
 ```
 
-### 历史命令之 `history`
+#### 历史命令之 `history`
 
 命令:history
 
@@ -246,7 +306,7 @@ cd - #表示返回切换前的目录
 * 方法 3: !数字 // 执行历史命令中第 N 条命令
 * 方法 4: !字符串 // 搜索历史命令中最近一个以 xxxx 字符开头的命令，例如!vim
 
-### Liunx 快捷键
+#### Liunx 快捷键
 
 都是用 Ctrl+下面的单词， ^表示 Ctrl 
 
@@ -267,7 +327,7 @@ cd - #表示返回切换前的目录
 
 命令补全使用 **tab** 键，tab 只能补全命令和文件(前提这个命令或文件要存在)
 
-### 系统时间管理
+### <a href="#time" id="time">查看系统和BIOS硬件时间</a>
 
 在 Linux 中有硬件时钟与系统时钟等两种时钟。硬件时钟是指主机板上的时钟设备，也就是通常可在 BIOS 画 面设定的时钟;系统时钟则是指 kernel 中 的时钟;所有 Linux 相关指令与函数都是读取系统时钟的设定
 当 Linux 启动时，系统时钟会去读取硬件时钟的设定，之后系统时钟即独立运作
@@ -290,14 +350,31 @@ Sun Dec 15 23:10:56 CST 2019
 * GMT (Greenwich Mean Time):格林尼治时间
 * CST (China standard Time):中国标准时间
 
-### 修改时间
+#### 修改时间
 
 ```
 [root@localhost ~]# date '+%Y-%m-%d %H:%M:%S'
 2019-12-15 23:18:50
 ```
 
-### 使用 time 命令测试一个命令运行的时间
+```
+# %F 完整日期格式，等价于 %Y-%m-%d
+[root@spring ~]# date "+%F"
+2020-01-24
+```
+
+date 命令相关参数：
+
+date --help
+
+-s, --set=STRING 把时间设为字符串所描述的时间
+
+```
+[root@spring ~]# date "+%Y 年 %m 月 %d 日 %H : %M : %S"
+2020 年 01 月 24 日 09 : 07 : 45
+```
+
+#### 使用 time 命令测试一个命令运行的时间
 
 time 作用:一般用来测量一个命令的运行时间 
 
@@ -317,7 +394,7 @@ sys 	0m0.028s
 * `user`: 用户状态使用的时间 
 * `sys` : 内核状态使用的时间
 
-### 帮助命令的使用
+### <a href="#help" id="help">Linux 如何获得帮助</a>
 
 man 手册:查看命令的手册页
 
@@ -325,14 +402,14 @@ man 手册:查看命令的手册页
 man date
 ```
 
-使用-h 或--help 查看命令选项
+使用`-h`或`--help`查看命令选项
 
 ```
 [root@localhost ~]# find --help 
 [root@localhost ~]# help time
 ```
 
-## 开机命令及7个启动级别
+### <a href="#switchLevel" id="switchLevel">开关机命令及7个启动级别</a>
 
 常用的几个关机，重启命令：
 
@@ -365,7 +442,8 @@ shutdown -c // 取消关机
 Linux 7 个启动级别:
 
 * 0 系统停机模式，系统默认运行级别不能设置为 0，否则不能正常启动，机器关的
-* 1 单用户模式，root 权限，用于系统维护，禁止远程登陆，就像 Windows 下的安全模式登录 2 多用户模式，没有 NFS 和网络支持
+* 1 单用户模式，root 权限，用于系统维护，禁止远程登陆，就像 Windows 下的安全模式登录 
+* 2 多用户模式，没有 NFS 和网络支持
 * 3 完整的多用户文本模式，有 NFS 和网络，登陆后进入控制台命令行模式
 * 4 系统未使用，保留一般不用，在一些特殊情况下可以用它来做一些事情。例如在笔记本电脑的电池用尽时，可以 切换到这个模式来做一些设置
 * 5 图形化模式，登陆后进入图形 GUI 模式，X Window 系
@@ -388,7 +466,34 @@ centos7 不再使用/etc/inittab 文件进行默认的启动级别配置，而�
 
 ```
 [root@localhost ~]# systemctl set-default multi-user.target 设置默认第五启动级别
+[root@spring ~]# systemctl set-default multi-user.target
+Removed symlink /etc/systemd/system/default.target.
+Created symlink from /etc/systemd/system/default.target to /usr/lib/systemd/system/multi-user.target.
 [root@localhost ~]# systemctl set-default graphical.target
 [root@localhost ~]# runlevel
 N 5 # 表示从 N 级别切换到了 5 级别
 ```
+
+### <a href="#actualCall" id="actualCall">实战：设置服务器来电后自动开机</a>
+
+进入 bios，一般是在开机后出现主板画面是按 Delete 这个键，部分品牌机可能按 F2，F1
+
+选择 Integrated Peripharals（外围设备设置）中的 SuperIO Device
+
+Integrated [ˈɪntɪgreɪtɪd] 集成 ； Peripharals [pəˈrɪfərəl] 外围
+
+将其中的 Restore On AC Power Loss 选项修改:Power On
+
+（若要加电不开机选择 Power Off，若要加电之前断电状态选择 Last State）
+
+### <a href="#actualCombat" id="actualCombat">实战：设置服务器定时开机]</a>
+
+设置服务器定时开机
+
+Power Management Setup，就进入电源管理设置了
+
+通过回车进入这个设置后，选择 Wake Up Event Setup，回车选择 Press Enter
+
+找到 RTC Alarm（[əˈlɑ:m] 报警），将 Disabied 更改为 Enabled，然后继续回车确定。然后再继续设置时间点和日期
+
+按 F10 保存，退出。
