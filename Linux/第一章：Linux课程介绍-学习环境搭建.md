@@ -56,7 +56,7 @@
 
 第一步：进入安装界面
 
-![登录](../img/install-linux-1.png)
+![](../img/install-linux-1.png)
 
 **界面说明：**
 
