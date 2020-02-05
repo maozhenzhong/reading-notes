@@ -1,519 +1,266 @@
-# Linux安装 基本配置
+# 第一章：Linux课程介绍-学习环境搭建
 
 ---
 
-## 简介 
-
-`Linux centOS-7-x86_64-DVD-1908.iso`安装后的基本配置
-
-## 版本
-
-0.0.1
-
 ## 目录
 
-* [配置防火墙和 SELinux](#firewall)
-* [配置静态IP并能够通过 SSH 连接](#ip)
-* [设置光盘镜像](#chmod)
-* [更换 yum 源](#yumSource)
-* [创建一个普通用户并赋予 root 权限](#root)
-* [nginx 安装](#nginxInstall)
-* [nginx 配置说明](#nginxConf)
-* [nginx 常用命令](#nginxCommand)
-* [nginx 反向代理](#reverseProxy)
-* [虚拟机网络使用技巧](#network)
-* [Git 安装](#installGit)
-* [配置Git账户](#settingGit)
-
-## Linux centOS7安装后的基本操作
-
-### <a id="firewall">配置防火墙和SELinux</a>
-
-```
-# 关闭防火墙
-[root@localhost ~]# systemctl stop firewalld.service
-[root@localhost ~]# systemctl disable firewalld.service
-```
-
-```
-# 关闭selinux
-[root@localhost ~]# sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
-```
-
-```
-[root@localhost ~]# vim /etc/sysconfig/selinux
-
-# SELINUX=enforcing # 默认开启修改为以下内容禁用
-SELINUX=disabled
-
-# 重启生效
-
-[root@localhost ~]# setenforce 0 # 临时关闭
-Permissive
-[root@localhost ~]# setenforce 1 # 临时开启
-[root@localhost ~]# getenforce # 查看当前情况
-```
-
-```
-# 安装依赖软件
-[root@localhost ~]# yum install -y zsh git
-```
-
-```
-# 通过以下方式安装
-[root@localhost ~]# sh -c "$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-```
-
-```
-# 同步时间
-[root@localhost ~]# yum  install -y ntpdate 
-[root@localhost ~]# echo ntpdate -u ntp.api.bz >>/etc/rc.local
-```
-
-### <a id="ip">配置静态IP并能够通过SSH连接</a>
-
-> IP: 192.168.2.198  
-> 路由器: 192.168.2.1
-
-```bash
-# 查看IP地址命令：
-[root@localhost ~]# ip a
-[root@localhost ~]# ip addr
-[root@localhost ~]# ifconfig
-[root@localhost ~]# setup
-[root@localhost ~]# nmtui
-[root@localhost ~]# nmcli # 修改IP
-[root@localhost ~]# nm-connection-editor
-# 在网卡中配置静态IP
-[root@localhost ~]# vi /etc/sysconfig/network-scripts/ifcfg-eth0
-```
-
-```
-# 将ONBOOT=no改为yes，保存后重启网络服务即可
-[root@localhost ~]# service network restart
-```
-
-```
-# 在网卡中配置如下内容可以设置静态 ip
-BOOTPROTO=static # 网卡获取IP的方式(默认为dchp,设置为静态获取。
-IPADDR=192.168.2.20 # 除最后部分其他与宿主机的网关一致
-GATEWAY=192.168.2.1 # 与宿主机保持一致
-NETMASK=255.255.255.0
-```
-
-> 查看IP地址信息：将 BOOTPROTO设置为 dhcp，系统会自动分配IP相关信息
-
-**如果要访问外网还要配置 DNS**
-
-> DNS1=192.168.2.1  # 如果不知道公共的DNS则可以使用默认网关GATEWAY地址
-> DNS2=8.8.8.8 # google
-> DNS3=223.5.5.5 # 阿里云
-
-```
-# 配置完之后保存重启网络
-[root@localhost ~]# service network restart
-```
+* [Linux 云计算集群架构师课程介绍及 Linux 发展史](#introductionToLinux)
+* [centos7.6 操作系统安装](#installCentOS)
+* [Linux 常用命令](#linuxCommonCommands)
+* [Linux 扩展](#extension)
+* []()
 
-```
-# 通过 SSH 连接
-[root@localhost ~]# ssh root@192.168.2.20
-```
+## 内容
 
-### <a id="chmod">设置光盘镜像</a>
+### <a href="#introductionToLinux" id="introductionToLinux">Linux 云计算集群架构师课程介绍及 Linux 发展史</a>
 
-```
-# 开机自动挂载
-[root@localhost ~]# echo "dev/sr0 /mnt iso9660 defaults 0 0" >> /etc/fstab 
+**UNIX诞生**
 
-# dev/sr0 光盘光驱
-# /mnt 挂载的目录
-# iso9660 光盘镜像格式
-# defaults 0 0 默认挂载选项
+1969年UNIX操作系统诞生，它由美国贝尔实验室的Ken Thompson（肯 汤普森）、Dennis Ritchie（丹尼斯 里奇）发明。unics-1970年=unix元年。
 
-# 单次挂载
-[root@localhost ~]# 
+**C语言诞生**
 
-# 查看挂载情况
-[root@localhost ~]# mount -a
-mount: dev/sr0 is write-protected, mounting read-only
-mount: special device dev/sr0 does not exist
-```
-
+* 1972年期间C语言诞生 汇编->硬件
+* 1973年，UNIX用C语言改写完成
+* 最为著名的有加州大学柏克莱（伯克利）分校的BSD unix系统。
+* 从1990年AT&T认识到了UNIX价值，因此他起诉包括伯克利在内的很多厂商。IBM、HP
+* 伯克利不得不推出不包含任何AT&T源代码的4.4 free BSD Lite
+* 1991年，这时候Linux系统正式发布
 
+林纳斯.本纳迪克特.托瓦斯 Linux Benedict Torvalds
 
-### <a id="yumSource">更换 yum 源</a>
+里查德.斯托尔曼 自由软件运动精神领袖、GNU计划以及自由软件基金会（Free Software Foundation）的创立者、著名黑客
 
-```
-# 打开centos的yum文件夹
-[root@localhost ~]# cd /etc/yum.repos.d/
-```
+**GNU**吉祥物牛羚/**Linux**吉祥企鹅
 
-```
-# 备份
-[root@localhost ~]# mv CentOS-Base.repo CentOS-Base.repo.backup
-```
+[http://www.gnu.org](http://www.gnu.org)
 
-**可以下载后更改名称**
-
-```
-# 用wget 下载
-[root@localhost ~]# wget http://mirrors.aliyun.com/repo/Centos-7.repo
-```
-
-> 如果wget命令不生效，说明还没有安装wget工具，输入yum -y install wget 回车进行安装。  
-> 当前目录是/etc/yum.repos.d/，刚刚下载的Centos-7.repo也在这个目录上
-
-```
-# 替换系统原来的repo文件
-[root@localhost ~]# mv CentOS-7.repo CentOS-Base.repo
-```
+* GNU计划，是由Richard Stallman公开发起。它的目的是创建一套完全自由的操作系统
+* GNU是“GNU 's Not Unix”的缩写
+* “free”指的是自由（freedom），而不是价格
 
-**也可以下载直接更换名称**
-
-```
-[root@localhost ~]# wget -O CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-```
-
-```
-# 执行yum源更新命令
-[root@localhost ~]# yum clean all
+**Linux内核**
 
-[root@localhost ~]# yum makecache
+内核网址：[http://www.kernel.org](http://www.kernel.org)
 
-[root@localhost ~]# yum update
+**各服务器操作系统行业分析**
 
-# 查看配置好的包
-[root@localhost yum.repos.d]# yum repolist
-```
+* Unix小型机
+* x86稳定、集群】价格低
+* Windows易用
+* 版权
+* Linux redhat 
+* centos
 
-### <a id="root">创建一个普通用户并赋予 root 权限</a>
+### <a href="#installCentOS" id="installCentOS">CentOS 7 操作系统安装</a>
 
-```
-# 创建普通用户
-[root@localhost ~]# useradd test
-[root@localhost ~]# passwd test 
-新的 密码：# 根据提示输入密码
-```
+第一步：进入安装界面
 
-```
-# 将该用户加入root组
-[root@localhost ~]# echo 'test ALL=(ALL)ALL'>> /etc/sudoers
-[root@localhost ~]# tail -1 /etc/sudoers
-[root@localhost ~]# text ALL=(ALL)ALL
-```
+![登录](./img/install-linux-1.png)
 
-### <a id="nginxInstall">Nginx 安装</a>
+**界面说明：**
 
-```
-# 安装Linux系统下的一些辅助工具
-[root@localhost ~]# yum -y install gcc gcc-c++ autoconf pcre-devel make automake wget httpd-tools vim
-```
+* `Install CentOS7` 安装CentOS7 **[推荐]**
+* `Test this media & CentOS 7` 测试安装的光盘镜像并安装CentOS7 **（检测时间较长）**
+* `Troubleshooting` 修复故障
 
-```
-# 查看nginx 版本
-[root@localhost ~]# yum list | grep nginx
-```
+第二步：进入语言选择，可以选择中文-简体中文（中国）我选择默认英语
 
-```
-# 建立nginx源的配置文件
-[root@localhost ~]# vim /etc/yum.repos.d/nginx.repo
-```
+![语言选择](./img/install-linux-1-1.png)
 
-```
-# 将如下代码修改后放到nginx.repo中并保存退出
-[nginx-stable]
-name=nginx stable repo
-baseurl=http://nginx.org/packages/centos/7/$basearch/
-gpgcheck=1
-enabled=1
-gpgkey=https://nginx.org/keys/nginx_signing.key
-```
+第三步：进入一站式安装界面，在此界面只需要把带⚠️内容的感叹号全部消除，便可进行安装
 
-```
-# 再次查看是否有最新稳定版本
-[root@localhost ~]# yum list |grep nginx
-```
+![语言选择](./img/install-linux-2.png)
 
-```
-# 安装nginx
-[root@localhost ~]# yum install nginx
-```
+时区选择亚洲上海
 
-### <a id="nginxConf">Nginx配置说明</a>
+![时区选择](./img/install-linux-3.png)
 
-```
-# 查看nginx安装到那里
-[root@localhost ~]# rpm -ql nginx
+语言选择
 
-# 或者
-[root@localhost ~]# whereis nginx
-```
+![语言选择](./img/install-linux-4.png)
 
-```
-# 查看nginx.conf
-[root@localhost ~]# cd /etc/nginx
-[root@localhost ~]# vi nginx.conf
-```
+键盘默认
 
-```
-# 查看 default.conf
-[root@localhost ~]# cd /etc/nginx/conf.d
-[root@localhost ~]# vim default.conf
-```
+安装源使用默认
 
-### <a id="#reverseProxy">Nginx 反向代理</a>
+![安装源](./img/install-linux-5.png)
 
-```
-[root@localhost ~]# vim /etc/nginx/conf.d/default.conf
-```
+软件包源，初学者建议选择带GUI的服务器，同时把“开发工具”相关的软件包也安装上
 
-```
-server {
-    listen       80;
-    server_name  localhost;
+![软件包源](./img/install-linux-6.png)
 
-    access_log      /root/md_vue_access.log;
-    error_log       /root/md_vue_error.log;
+选择-系统-安装位置，进入磁盘分区界面
 
+![安装位置](./img/install-linux-7.png)
 
-    client_max_body_size 75M;
+![进入磁盘分区界面](./img/install-linux-8.png)
 
+分区方案有:
 
-    location / {
+1. Standard Partition，**[选择这项，标准分区]**
+2. btrfs，
+3. LVM，
+4. LVM Thin Pprovisioning，
 
-        root /root/dist;
-        index index.html;
-        try_files $uri $uri/ /index.html;
+![分区方案](./img/install-linux-9.png)
 
-    }
-    
-    error_log    /root/dist/error.log    error;
+然后单击 创建新的分区，分区提前规划好， /boot 分区 500M，一般 swap 分区为物理内存 的 1.5~2 倍，当物理机内存多于 16G 后，swap 分区给 8-16G 都可以。 /根分区 10G，实际工作中 可以创建数据分区，一般把数据和系统分开。
 
-}
-```
+`/boot` 分区
 
-```
-# 继续修改配置
-[root@localhost ~]# vim /etc/nginx/nginx.conf
-将第一行改为 user root;
-```
+![`/boot` 分区](./img/install-linux-10.png)
 
-改好后，重启nginx服务
+`/swap` 分区
 
-```
-[root@localhost ~]# systemctl reload nginx.service
-```
+![`/swap` 分区](./img/install-linux-11.png)
 
+`/` 分区
 
+![`/` 分区](./img/install-linux-12.png)
 
-### <a id="nginxCommand"> Nginx 常用命令</a>
+选择接受更改选项
 
-```
-# nginx 服务运行情况查询
-[root@localhost ~]# ps aux | grep nginx
-```
+![选择接受更改选项](./img/install-linux-13.png)
 
-```
-# 设置开机启动
-[root@localhost ~]# sudo systemctl enable nginx
-```
+**[注：]**
 
-```
-# 启动nginx
-[root@localhost ~]# sudo systemctl start nginx
+1. `boot` 分区： 是引导分区，作用：系统启动，在 `boot` 分区存放着 `grub`，内核文件等，一般 200M 就够，考虑到内核升级建议500M。
+2. `swap` 交换分区：内存扩展分区 交换分区 给多大？ 一般最多：8G，16G，如果系统使用到了 swap 分区，就直接添加物理内存或排查一下服务器有没有被黑，我这里给2G。 
+3.  `/` 根 ： 所有文件的根 绝对路径的开始标志
 
-# 或者
-[root@localhost ~]# systemctl start nginx.service
-```
+关闭 kdump
 
-```
-# 重启nginx
-[root@localhost ~]# sudo systemctl restart nginx
-```
+![关闭 kdump](./img/install-linux-14.png)
 
-```
-# 重新加载，因为一般重新配置之后，不希望重启服务，这时可以使用重新加载
-[root@localhost ~]# sudo systemctl reload nginx
-```
+网络配置，默认 centos7 是关闭网络的，我们在这里一定要开启以太网连接，将会自动获取 IP 地址。我们配置主机名为： test 并修改为静表态 IP 地址：
 
-```
-# 停止nginx
-[root@localhost ~]# nginx -s stop # 立即停止服务
-[root@localhost ~]# nginx -s quit # 从容器中停止服务
-[root@localhost ~]# killall nginx # 杀死进程
-[root@localhost ~]# systemctl stop nginx.service # systemctl 停止
-```
+![网络配置](./img/install-linux-15.png)
 
-```
-# 查看nginx是否安装成功
-[root@localhost ~]# nginx -v
-```
+![网络配置](./img/install-linux-16.png)
 
-```
-# 查看开启的端口号
-[root@localhost ~]# netstat -tln
-```
+手动配置
 
-```
-# 解决nslookup命令找不到
-[root@localhost ~]# yum install bind-utils -y
-```
+![手动配置](./img/install-linux-17.png)
 
-### <a id="nginxError">Nginx报错</a>
+安全策略使用默认
 
-Nginx报错：nginx: [error] invalid PID number "" in "/run/nginx.pid" 解决方法
+进入安装界面，这里需要配置用户密码
 
-服务器重启之后，执行 nginx -t 是OK的，然而在执行 nginx -s reload 的时候报错
+![安装界面](./img/install-linux-18.png)
 
-```
-[root@localhost ~]# nginx: [error] invalid PID number "" in "/run/nginx.pid"
-```
+输入密码
 
-解决方法：
+![输入密码](./img/install-linux-19.png)
 
-需要先执行
+系统成功启动
 
-```
-[root@localhost ~]# nginx -c /etc/nginx/nginx.conf
+![系统启动界面](./img/install-linux-20.png)
 
-[root@localhost ~]# nginx.conf文件的路径可以从nginx -t的返回中找到。
+这里分两个分支：如果安装了GUI进入GUI设置界面，如果是最小安装，则进入命令界面
 
-[root@localhost ~]# nginx -s reload
-```
+进入命令界面
 
-### <a id="network">虚拟机网络使用技巧</a>
+输入登录的账号和密码
 
-虚拟机为我们提供了三种网络工作模式：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式）
+![输入账户](./img/install-linux-20-1.png)
 
-**桥接模式：**就是将主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信。
+![输入密码](./img/install-linux-20-2.png)
 
-在桥接的作用下，类似于把物理主机虚拟为一个交换机，所有桥接设置的虚拟机连接到这个交换机的一个接口上，物理主机也同样插在这个交换机当中。
+GUI设置界面
 
-虚拟机IP地址需要与主机在同一个网段，如果需要联网，则网关与DNS需要与主机网卡一致。
+点击 Licensing
 
-![](./img/WechatIMG5.png)
-![](./img/WechatIMG4.png)
+![Licensing](./img/install-linux-21.png)
 
-**NAT(地址转换模式)：**在NAT模式下，虚拟主机需要借助虚拟NAT设备和虚拟DHCP服务器，使得虚拟机可以联网。虚拟机和物理机共有一个IP地址。
+同意许可协议
 
-> 注：虚拟机使用NAT模式时，Linux系统要配置成动态获取IP。
+![Licensing](./img/install-linux-22.png)
 
-![](./img/WechatIMG3.png)
+首次登陆进行 Gnome-initial-setup（GNOME 初始化设置） 语言选择，默认就可以，直接前进
 
-**Host-Only 模式：** 将虚拟机与外网隔开，使得虚拟机成为一个独立的系统，只与主机相互通讯。相当于NAT模式去除了虚拟NAT地址转换功能。
+![语言选择](./img/install-linux-23.png)
 
-> 注：虚拟机使用**Host-Only**模式时，Linux系统要配置成动态获取IP
+选择键盘布局，默认前进即可
 
-![](./img/JetbrainsCrack-release-enc.jar)
+![键盘布局](./img/install-linux-24.png)
 
+![位置服务](./img/install-linux-25.png)
 
-### <a id="sshError">mac终端连接服务器报错</a>
+关闭定位服务
 
-解决方法
+![定位服务](./img/install-linux-26.png)
 
-```
-[root@localhost ~]# ssh-keygen -R +192.168.1.110 #输入服务器的IP
-```
+在线账号设置，如果有可以进行设置，没有的话，直接跳过即可
 
+![在线账号设置](./img/install-linux-27.png)
 
-### <a id="installGit">Git 安装</a>
+设置一个登录账号
 
-```
-[root@localhost ~]#  git --version
-git version 1.8.3.1
-```
+![登录账号](./img/install-linux-28.png)
 
-**Remove old git**
+![登录账号密码](./img/install-linux-29.png)
 
-```
-[root@localhost ~]# sudo yum remove git*
-```
+一切准备就绪，开始使用 centos7.4 系统
 
-**Add IUS CentOS 7 repo**
+![开始使用](./img/install-linux-30.png)
 
-```
-[root@localhost ~]# sudo yum -y install  https://centos7.iuscommunity.org/ius-release.rpm
-[root@localhost ~]# sudo yum -y install  git2u-all
-```
+弹出使用介绍界面，关闭即可
 
-Check git version after installing git2u-all package
+![使用介绍界面](./img/install-linux-31.png)
 
+到此 centos7.4 操作系统安装完成
 
-```
-[root@localhost ~]#  git --version
-git version 2.16.5
-```
-As confirmed, the current version of Git is 2.16.5
+打开终端
 
-**Install the latest git from source**
+![打开终端](./img/install-linux-32.png)
 
-In this method, you’ll be tasked with building git from source code. Install dependency packages required
+### <a href="#linuxCommonCommands" id="linuxCommonCommands">Linux 常用命令</a>
 
-```
-[root@localhost ~]# sudo yum groupinstall "Development Tools"
-[root@localhost ~]# sudo yum -y install wget perl-CPAN gettext-devel perl-devel  openssl-devel  zlib-devel curl-devel expat-devel
-```
+* `man`: Manual
+* `pwd`: Print working directory
+* `su`: Swith user
+* `cd`: Change directory
+* `ls`: List files
+* `ps`: Process Status
+* `mkdir`: Make directory
+* `mkfs`: Make file system
+* `fsck`: File system check
+* `cat`: Concatenate
+* `uname`: Unix name
+* `df`: Disk free
+* `du`: Disk usage
+* `lsmod`: List modules
+* `mv`: Move file
+* `rm`: Remove file
+* `cp`: Copy file
+* `ln`: Link files
+* `fg`: Foreground
+* `bg`: Background
+* `chown`: Change owner
+* `chgrp`: Change group
+* `chmod`: Change mode
+* `umount`: Unmount
+* `dd`: 本来应根据其功能描述“Convert an copy”命名为“cc”，但“cc”已经被用以代表“C Complier”，所以命名为“dd” 
+* `tar`: Tape archive
+* `ldd`: List dynamic dependencies
+* `insmod`: Install module
+* `rmmod`: Remove module
+* `lsmod`: List module
 
-Download and install git
+### <a href="#extension" id="extension">扩展</a>
 
-```
-[root@localhost ~]# export VER="2.24.1"
-[root@localhost ~]# wget https://github.com/git/git/archive/v${VER}.tar.gz
-[root@localhost ~]# tar -xvf v${VER}.tar.gz
-[root@localhost ~]# rm -f v${VER}.tar.gz
-[root@localhost ~]# cd git-*
-[root@localhost ~]# sudo make install
-```
+CentOS6与CentOS7的区别：
 
-Check new version of git installed on your system
-
-```
-[root@localhost ~]#  git --version
-git version 2.22.0
-```
-You should now have the latest release of Git on your CentOS 7 server.
-
-### <a id="settingGit">配置Git账户</a>
-
-```
-# 配置账户和密码
-[root@localhost ~]# git config --global user.name "Your Name"
-[root@localhost ~]# git config --global user.email "email@example.com"
-```
-
-```
-# 查看配置是否生效
-[root@localhost ~]# git config --list
-```
-
-```
-# 配置SSH用于拉取远程仓库
-[root@localhost nginx]# ssh-keygen -t rsa -C 'maozhenzhong2008@163.com'
-Generating public/private rsa key pair.
-Enter file in which to save the key (/root/.ssh/id_rsa):
-Created directory '/root/.ssh'.
-Enter passphrase (empty for no passphrase):
-Enter same passphrase again:
-Your identification has been saved in /root/.ssh/id_rsa.
-Your public key has been saved in /root/.ssh/id_rsa.pub.
-The key fingerprint is:
-SHA256:+PsGn3+Fyu+NAF2KhWdfmqxEsuEd4V7RYQjq1MwR7Vs maozhenzhong2008@163.com
-The key's randomart image is:
-+---[RSA 2048]----+
-|           += o+.|
-|          =o.+...|
-|         o++O o .|
-|       .o. & O E |
-|      . S.= * B. |
-|       ..  o o. .|
-|        .o oo. . |
-|         .+ o..o |
-|        .o...++ .|
-+----[SHA256]-----+
-```
-
-```
-# id_rsa：私钥 ，id_rsa.pub：公钥
-```
-
-
+* 文件系统的区别：ext4 xfs
+* 硬盘默认调度算法不一样：cfq deadline
+* 内核版本不一样2.6 3.10
+* 在7中，支持动态补丁机制kpatch，这个也是作为技术预览的，和btrfs文件系统一样
+* 支持内核模块黑名单机制：modproble.blacklist=module
+* 支持嵌套虚拟化技术，对虚拟机cpu更流畅
+* 内核级支持资源调优和分配 在7中cgroup
+* 在6中对usb2.0在7中usb3.0支持
+* lvm快照。在7中。qcow2格式文件型快照的支持
+* 加强了对vmware的技术支持，自带open-vmtools替换了vm-tools
+* 启动工具，在7中用的全新服务器启动管理器 systemctl，在6中做一些服务的启停用service
+* 在7中内核出现错误了。导出core文件最大支持3TB，6中最大支持2TB
