@@ -1,4 +1,4 @@
-# 文件的基本管理和XFS文件系统备份恢复
+# 第四章：文件系统的管理方法和xfs文件系统备份恢复
 
 ---
 
@@ -16,11 +16,14 @@
 #### 1.1 系统目录结构
 
 ```
+# 临时挂载光驱
+
 [root@spring ~]# mount /dev/sr0 /media/
 mount: /dev/sr0 is write-protected, mounting read-only
 ``` 
 
 ```
+# 本地安装 tree
 [root@spring ~]# rpm -ivh /media/Packages/tree-1.6.0-10.el7.x86_64.rpm
 Preparing...                          ################################# [100%]
 	package tree-1.6.0-10.el7.x86_64 is already installed
@@ -77,7 +80,7 @@ boot  etc  lib   media  opt  root  sbin  sys  usr
 /root
 ```
 
-* **绝对路径：** 从/开始的路径 /home/mk
+* **绝对路径：** 从`/`开始的路径 `/home/spring` # spring 为用户目录
 * **相对路径：** 相对于当前目录开始，a.txt ./a.txt ../miao/b.txt 当前目录在/etc
 
 ### <a href="#manipulatingFiles" id="manipulatingFiles">创建/复制/删除文件，rm -rf / 意外事故</a>
@@ -381,6 +384,10 @@ xfsrestore 来备份和恢复。
 * **完全备份：**每次都把指定的备份目录完整的复制一遍，不管目录下的文件有没有变化；
 * **增量备份：**每次将之前（第一次、第二次、直到前一次）做过备份之后有变化的文件进行备份；
 * **差异备份：**每次都将第一次完整备份以来有变化的文件进行备份。
+
+![增量备份](./img/增量备份.png)
+
+![差异备份](./img/差异备份.png)
 
 ```
 # 对新添加的硬盘进行格式化，指定分区的设备

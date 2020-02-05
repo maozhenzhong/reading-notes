@@ -1,4 +1,4 @@
-# CentOS7-系统进程管理
+# 第十章：Linux系统进程管理
 
 ---
 
@@ -470,7 +470,7 @@ kill -l =====> 列出所有支持的信号（了解） 用最多的是： 9 信�
 * 19）    SIGSTOP 停止
 * 20）   SIGTSTP 暂停 crtl+z
 
-````
+```
 [root@spring ~]# kill -9 1112
 [root@spring ~]# ps -aux | grep vim
 root      1121  0.0  0.0 112712   960 pts/0    S+   22:28   0:00 grep --color=auto vim
@@ -479,14 +479,19 @@ root      1121  0.0  0.0 112712   960 pts/0    S+   22:28   0:00 grep --color=au
 Connection to 192.168.2.220 closed by remote host.
 Connection to 192.168.2.220 closed.
 maozhenongdeMBP:~ root# pkill sshd
+
 ```
 
 #### 3.4 进程的优先级管理
 
 优先级取值范围为（-20,19），越小优先级越高, 默认优先级是 0
 
+**命令 1：**
+
 * 命令 1：nice 指定程序的运行优先级
 * 格式：nice n command
+
+**命令 2:**
 
 * 命令 2：renice 改变程序的运行优先级
 * 格式：renice -n pid

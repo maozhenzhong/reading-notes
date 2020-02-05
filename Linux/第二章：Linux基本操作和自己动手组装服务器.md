@@ -1,4 +1,4 @@
-# Linux 基本操作和自己动手操作组装服务器
+# 第二章：Linux基本操作和自己动手组装服务器
 
 ---
 
@@ -28,7 +28,14 @@ CentOS7采用dmidecode采集命名方案，以此来得到主板信息；它可�
 2. 如果Firmware（固件）或BIOS为PCI-E扩展槽所提供的索引信息可用，且可预测则根据此索引进行命名，例如：ifcfg-enp33
 3. 如果硬件接口的物理位置信息可用，则根据此信息进行命名，例如enp2s0
 4. 上述均不可用，则使用传统命名机制
-5. CentOS8=ens160
+5. CentOS8=ens160 `ifcfg-enp0s3`
+
+enX（X常见有以下3种类型）：
+
+* o: 主板板载网卡，集成设备的设备索引号。
+* p: 独立网卡，PCI网卡
+* s: 热插拔网卡，USB之类，扩展槽的索引号
+* nnn(数字)表示:MAC地址+主板信息计算得出唯一的序列
 
 2.1.2 ifconfig命名使用方法
 
@@ -64,6 +71,19 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
         TX packets 4  bytes 344 (344.0 B)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
+
+上图信息说明： 
+
+* 第一行：
+	+ UP-->网卡开启状态 
+	+ RUNNING-->网线处理连接状态 
+	+ MULTICAST-->支持组播 
+	+ mtu 1500-->（Maximum Transmission Unit）最大传输单元大小为 1500 字节 
+* 第二行：该网卡的 IP 地址，子网掩码，广播地址 
+* 第三行：IPV6 的配置信息 
+* 第四行：网卡的 MAC 地址 ether 表示连接类型为以太网 txqueuelen 1000 -->传输队列的长度 
+* 第五六行：网卡接收数据包的统计信息和接收错误的统计信息 
+* 第七八行：网卡发送数据包的统计信息和发送错误的统计信息
 
 ```
 临时修改IP信息
@@ -104,6 +124,25 @@ IPV6_PRIVACY="no"
 [root@localhost network-scripts]# service network restart # CentOS6
 ```
 
+参数说明： 
+
+```
+DEVICE：# 此配置文件应用到的设备 
+HWADDR：# 对应的设备的 MAC 地址 
+BOOTPROTO：# 激活此设备时使用的地址配置协议，常用的 dhcp, static, none, bootp
+NM_CONTROLLED： # NM 是 NetworkManager 的简写，此网卡是否接受 NM 控制；建议 CentOS6 为“no” 
+ONBOOT：# 在系统引导时是否激活此设备 
+TYPE：# 接口类型；常见有的 Ethernet, Bridge 
+UUID：# 设备的惟一标识 
+IPADDR：# 指明 IP 地址 
+NETMASK：# 子网掩码 
+GATEWAY: # 默认网关
+DNS1：# 第一个 DNS 服务器指向 
+DNS2：# 第二个 DNS 服务器指向 
+USERCTL：# 普通用户是否可控制此设备 
+IPV4_FAILURE_FATAL # 如果为 yes，则 ipv4 配置失败禁用设备
+```
+
 ```
 # 零时添加多个网卡
 [root@localhost network-scripts]# ifconfig enp0s3:1 192.168.2.221 netmask 255.255.255.0
@@ -139,6 +178,32 @@ Hint: Some lines were ellipsized, use -l to show in full.
 ```
 
 ```
+# CentOS 8
+[root@spring ~]# systemctl status NetworkManager
+● NetworkManager.service - Network Manager
+   Loaded: loaded (/usr/lib/systemd/system/NetworkManager.service; enabled; ven>
+   Active: active (running) since Wed 2020-02-05 13:54:30 CST; 18min ago
+     Docs: man:NetworkManager(8)
+ Main PID: 660 (NetworkManager)
+    Tasks: 3 (limit: 6084)
+   Memory: 7.4M
+   CGroup: /system.slice/NetworkManager.service
+           └─660 /usr/sbin/NetworkManager --no-daemon
+
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.1823] device (e>
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.2128] device (e>
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.2207] device (e>
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.2218] device (e>
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.2244] manager: >
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.2357] manager: >
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.2364] policy: s>
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.2517] device (e>
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.2547] manager: >
+Feb 05 13:54:33 spring NetworkManager[660]: <info>  [1580882073.2802] manager: >
+lines 1-20/20 (END)
+```
+
+```
 # 修改完网卡，后重新启动CentOS6、7、8都可用
 ifdown enp0s3 && ifup enp0s3
 ```
@@ -156,8 +221,37 @@ ifdown enp0s3 && ifup enp0s3
 
 # 关闭网卡
 [root@spring network-scripts]# nmcli connection down enp0s3
+
 # 重启网卡
 [root@spring network-scripts]# nmcli connection up enp0s3
+```
+
+`NeworkManager`概述
+
+`NeworkManager` 服务是管理和监控网络设置的守护进程，CENTOS7更加注重实用`NeworkManager`服务来实现网络的配置和管理，7.0 以前是通过network服务管理网络，以后的版本，所有网络管理和设置统一由`NeworkManager`服务来维护。它是一个动态的，事件驱动的网络管理服务。
+
+```
+# 查看NetworkManager 服务是否启动
+[root@spring network-scripts]# systemctl status NetworkManager 
+● NetworkManager.service - Network Manager
+   Loaded: loaded (/usr/lib/systemd/system/NetworkManager.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2020-01-23 22:24:52 CST; 1h 45min ago
+     Docs: man:NetworkManager(8)
+ Main PID: 598 (NetworkManager)
+   CGroup: /system.slice/NetworkManager.service
+           └─598 /usr/sbin/NetworkManager --no-daemon
+
+Jan 23 22:24:52 spring NetworkManager[598]: <info>  [1579789492.9848] device...)
+Jan 23 22:24:53 spring NetworkManager[598]: <info>  [1579789493.0022] device...)
+Jan 23 22:24:53 spring NetworkManager[598]: <info>  [1579789493.0081] device...)
+Jan 23 22:24:53 spring NetworkManager[598]: <info>  [1579789493.0101] device...)
+Jan 23 22:24:53 spring NetworkManager[598]: <info>  [1579789493.0122] manage...L
+Jan 23 22:24:53 spring NetworkManager[598]: <info>  [1579789493.0805] manage...E
+Jan 23 22:24:53 spring NetworkManager[598]: <info>  [1579789493.0806] policy...S
+Jan 23 22:24:53 spring NetworkManager[598]: <info>  [1579789493.0857] device....
+Jan 23 22:24:53 spring NetworkManager[598]: <info>  [1579789493.0890] manage...L
+Jan 23 22:24:53 spring NetworkManager[598]: <info>  [1579789493.0924] manage...e
+Hint: Some lines were ellipsized, use -l to show in full.
 ```
 
 ### <a id="关闭防火墙并设置开机不启动">关闭防火墙并设置开机不启动</a>
