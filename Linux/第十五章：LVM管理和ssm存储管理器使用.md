@@ -624,7 +624,7 @@ lvcreate -n 指定新逻辑卷的名称 -L 指定 lv 大小的 SIZE(M,G) （-l�
   VG UUID               c127fg-OKdd-aLHv-jGr0-G5UM-BDrT-4nWMj4
 ```  
 
-**2.6 文件系统格式与挂载**
+**2.2.1 文件系统格式与挂载**
 
 ```
 [root@spring ~]# mkdir /lv01
@@ -866,7 +866,7 @@ resize2fs: On-line shrinking not supported
   /dev/sdb4       lvm2 ---     1.00g    1.00g
 ```
 
-**2.7 LVM 删除  **
+**2.7 LVM 删除**
 
 创建 LVM 流程:   
 pvcreate 创建 pv -> vgcreate 创建卷组 -> lvcreate 创建逻辑卷 -> mkfs.xfs lv 格式化-> mount 挂载
