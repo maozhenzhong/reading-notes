@@ -9,6 +9,7 @@
 * [查看系统和BIOS硬件时间](#time)
 * [Linux 如何获得帮助](#help)
 * [开关机命令及7个启动级别](#switchLevel)
+* [CentOS7 时间与网络时间同步](#networkTime)
 * [实战：设置服务器来电后自动开机](#actualCall)
 * [实战：设置服务器定时开机](#actualCombat)
 
@@ -472,6 +473,103 @@ Created symlink from /etc/systemd/system/default.target to /usr/lib/systemd/syst
 [root@localhost ~]# systemctl set-default graphical.target
 [root@localhost ~]# runlevel
 N 5 # 表示从 N 级别切换到了 5 级别
+```
+
+### <a href="#networkTime" id="networkTime">CentOS7 时间与网络时间同步</a>
+
+**1、NTP 和 NTPDATE**
+
+在 Linux 系统中，可以通过 ntpdate 和 ntpd 两种方式实现 NTP 时间同步，ntpdate 为断点更新，ntpd 为步进式地逐渐调整时间。对于新服务器，可以使用 ntpdate 同步时间，对于已经承载有运行中业务的服务器，建议使用 ntpd 同步时间。
+
+```
+[root@spring ~]# yum -y install ntp ntpdate # 安装ntpdate工具
+```
+
+```
+[root@spring ~]# ntpdate 0.asia.pool.ntp.org # 设置系统时间与网络时间同步
+ 8 Feb 23:57:43 ntpdate[1280]: step time server 211.19.59.28 offset 28802.276867 sec
+```
+
+**NTP服务器**
+
+
+为了同步系统时钟,首先需要找一个NTP服务器使用, 一下这个同步时间的速度比较快,如：
+
+1. `pool.ntp.org`、
+2. `cn.pool.ntp.org`、
+3. `0.pool.ntp.org`、
+4. `2.pool.ntp.org`、
+5. `time.nist.gov`、
+6. `time.nuri.net`、
+7. `0.asia.pool.ntp.org`、
+8. `1.asia.pool.ntp.org`、
+9. `2.asia.pool.ntp.org`、
+10. `3.asia.pool.ntp.org`
+
+选择多个服务器的好处: 当某个服务器不通的时候，或者时钟不可靠的时候可以有别的选择,因为`ntpd`会智能选择智能地选择它收到的响应──它会更倾向于使用可靠的服务器。
+
+```
+[root@spring ~]# hwclock --systohc # 将系统时间写入硬件时间
+```
+
+这里是为了防止系统重启后时间被还原，因此需要写到硬件设备中去。
+
+* `timedatectl`：Linux 7中的新增功能，也是systemd其中的一部分。
+* `date`：系统时钟，也成为软件时钟，一旦系统启动并且系统时钟被初始化，系统时钟就完全独立硬件时钟。
+* `hwclock`：  real-time clock (RTC)通常被称为硬件时钟，（在系统集成电路板上）,即使在机器关闭时也能正常工作。实时时钟可以使用UTC（ Universal Time）或本地时间，建议使用UTC。
+
+```
+[root@spring ~]# date # 查看系统时间
+Sun Feb  9 00:26:47 CST 2020
+[root@spring ~]# hwclock # 查看硬件时间
+Sun 09 Feb 2020 12:26:54 AM CST  -0.386609 seconds
+[root@spring ~]# timedatectl # 查看系统时间方面的各种状态
+      Local time: Sun 2020-02-09 00:27:13 CST
+  Universal time: Sat 2020-02-08 16:27:13 UTC
+       Time zone: Asia/Shanghai (CST, +0800)
+     NTP enabled: no
+NTP synchronized: no
+ RTC in local TZ: yes
+      DST active: n/a
+
+Warning: The system is configured to read the RTC time in the local time zone.
+         This mode can not be fully supported. It will create various problems
+         with time zone changes and daylight saving time adjustments. The RTC
+         time is never updated, it relies on external facilities to maintain it.
+         If at all possible, use RTC in UTC by calling
+         'timedatectl set-local-rtc 0'.
+
+```
+
+```
+[root@spring ~]# timedatectl list-timezones # 列出所有时区
+Africa/Abidjan
+Africa/Accra
+Africa/Addis_Ababa
+Africa/Algiers
+Africa/Asmara
+Africa/Bamako
+Africa/Bangui
+Africa/Banjul
+Africa/Bissau
+Africa/Blantyre
+Africa/Brazzaville
+Africa/Bujumbura
+Africa/Cairo
+Africa/Casablanca
+Africa/Ceuta
+Africa/Conakry
+Africa/Dakar
+Africa/Dar_es_Salaam
+Africa/Djibouti
+Africa/Douala
+Africa/El_Aaiun
+Africa/Freetown
+Africa/Gaborone
+Africa/Harare
+lines 1-24
+[root@spring ~]# timedatectl set-local-rtc 1 # 将硬件时钟调整为与本地时钟一致, 0 为设置为 UTC 时间
+[root@spring ~]# timedatectl set-timezone Asia/Shanghai # 设置系统时区为上海
 ```
 
 ### <a href="#actualCall" id="actualCall">实战：设置服务器来电后自动开机</a>
