@@ -572,6 +572,12 @@ lines 1-24
 [root@spring ~]# timedatectl set-timezone Asia/Shanghai # 设置系统时区为上海
 ```
 
+```
+# 格式化显示时间
+[root@spring ~]# date +"%Y/%m/%d %H:%M:%S"
+2020/02/10 00:51:18
+```
+
 ### <a href="#actualCall" id="actualCall">实战：设置服务器来电后自动开机</a>
 
 进入 bios，一般是在开机后出现主板画面是按 Delete 这个键，部分品牌机可能按 F2，F1
