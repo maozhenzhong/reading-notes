@@ -383,8 +383,42 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 ```
 [root@spring yum.repos.d]# mv ./CentOS-Base.repo ./CentOS-Base.repo.bak
+```
+
+
+**可以下载后更改名称**
 
 ```
+# 用wget 下载
+[root@localhost ~]# wget http://mirrors.aliyun.com/repo/Centos-7.repo
+```
+
+> 如果wget命令不生效，说明还没有安装wget工具，输入yum -y install wget 回车进行安装。  
+> 当前目录是/etc/yum.repos.d/，刚刚下载的Centos-7.repo也在这个目录上
+
+```
+# 替换系统原来的repo文件
+[root@localhost ~]# mv CentOS-7.repo CentOS-Base.repo
+```
+
+**也可以下载直接更换名称**
+
+```
+[root@localhost ~]# wget -O CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+```
+
+```
+# 执行yum源更新命令
+[root@localhost ~]# yum clean all
+
+[root@localhost ~]# yum makecache
+
+[root@localhost ~]# yum update
+
+# 查看配置好的包
+[root@localhost yum.repos.d]# yum repolist
+```
+
 
 ### <a id="创建可用实验快照">创建可用实验快照</a>
 
