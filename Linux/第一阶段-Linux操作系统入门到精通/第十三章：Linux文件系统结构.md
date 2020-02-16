@@ -118,8 +118,8 @@ ZBR 磁盘扇区结构示意图
 
 
 > 互动：  
-> 1. windows ： C 盘安装最外，速度也是最快  
-> 2. boot 分区和 swap 分区，装最外面  
+> 1. windows ： C 盘安装最外，速度也是最快 0 柱面 0磁道 1扇区  
+> 2. boot 分区和 swap 分区，装最外面  0 柱面 0磁道 1扇区
 
 **簇和 block**
 
@@ -139,9 +139,9 @@ Change: 2020-01-31 22:18:26.149000000 +0800
 
 ### <a href="#文件系统结构" id="文件系统结构">文件系统结构</a>
 
-* Linux 文件系统由三部分组成：文件名、inode、block
-* Linux 文件系统：ext3、ext4、xfs
-* Windows文件系统：FAT32、NTFS
+* Linux 文件系统由三部分组成：`fileName`、`inode`、`block`
+* Linux 文件系统：`ext3`、`ext4`、`xfs`
+* Windows文件系统：`FAT32`、`NTFS`
 
 **1、文件名**
 
@@ -203,9 +203,9 @@ Change: 2020-02-05 12:32:25.219000000 +0800
 
 **3、inode的大小**
 
-inode也会消耗硬盘空间，所以硬盘格式化的时候，操作系统自动将硬盘分成两个区域。一个是数据区、存放文件数据；另一个是inode区（inode table），存放inode所包含的信息。
+inode也会消耗硬盘空间，所以硬盘格式化的时候，操作系统自动将硬盘分成两个区域。<font color="#f00">一个是数据区、存放文件数据；另一个是inode区（inode table）</font>，存放inode所包含的信息。
 
-每个inode节点的大小，一般是128字节或256字节。inode节点的总数，在格式化时就给定，假定在一块1GB的硬盘中，每个inode节点的大小为128字节，每1KB就设置一个inode，那么inode table的大小就会达到128MB，占整块硬盘的12.8%。
+每个inode节点的大小，一般是128字节或256字节。inode节点的总数，在格式化时就给定，假定在一块1GB的硬盘中，<font color="#f00">每个inode节点的大小为128字节</font>，每1KB就设置一个inode，那么inode table的大小就会达到128MB，占整块硬盘的12.8%。
 
 inode号码：每个inode都有一个号码，操作系统用inode号码来识别不同的文件。
 
@@ -461,6 +461,18 @@ lrwxrwxrwx 1 root root 6 Feb  5 19:20 /root/aaa -> ./grub # 报错了
 [root@spring ~]# vim passwd
 [root@spring ~]# ls -i passwd
 16819929 passwd
+```
+
+```
+[root@spring ~]# stat a.txt
+  File: a.txt
+  Size: 18        	Blocks: 8          IO Block: 4096   regular file
+Device: 803h/2051d	Inode: 33742868    Links: 2
+Access: (0755/-rwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2020-02-15 21:36:35.332854206 +0800
+Modify: 2020-02-15 21:36:32.501854312 +0800
+Change: 2020-02-15 21:36:32.511854312 +0800
+ Birth: -
 ```
 
 ### <a href="#实战" id="实战">实战：解决磁盘有空间但创建不了文件-修复服务器文件系统]</a>
