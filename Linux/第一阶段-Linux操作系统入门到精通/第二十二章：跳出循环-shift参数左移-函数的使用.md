@@ -587,7 +587,7 @@ MariaDB 数据库概述：MariaDB 数据库管理系统是 MySQL 的一个分支
 甲骨文公司收购了 MySQL 后，有将 MySQL 闭源的潜在风险，因此社区采用分支的方式来避开这个风险。 过去一年中，大型互联网用户以及 Linux 发行商纷纷抛弃 MySQL，转投 MariaDB 阵营。MariaDB 是目前最受关注的 MySQL 数据库衍生版，也被视为开源数据库 MySQL 的替代品。
 
 ```
-[root@xuegod63 ~]# yum install -y mariadb mariadb-server -y # mariadb 是 mysql 的客户端命令 ；mariadb mariadb-server 是 mysql 服务端命令
+[root@xuegod63 ~]# yum install -y mariadb mariadb-server # mariadb 是 mysql 的客户端命令 ；mariadb mariadb-server 是 mysql 服务端命令
 [root@spring ~]# rpm -qf /usr/bin/mysql
 mariadb-5.5.64-1.el7.x86_64
 [root@spring ~]# systemctl start mariadb
