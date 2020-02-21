@@ -95,7 +95,7 @@ xinetd 管理 Rsync 工作原理，如图 2-2 所示
 
 ### <a href="#installRsync" id="installRsync">Rsync 服务安装</a>
 
-实验拓扑：
+实验环境：
 
 1. spring(源主机：192.168.2.220)
 2. hye(目标主机：192.168.2.218)
