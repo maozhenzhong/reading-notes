@@ -340,8 +340,26 @@ Backup data is OK!
 
 Shell 解释执行用户的命令时，将命令行的第一个字符作为命令名，而其它字符作为参数。
 
+* 1）$0 获取当前执行脚本的文件名包括路径
+	* dirname $0   只取当前执行脚本的路径
+	* basename $0   只取当前执行脚本文件名
+* 2）$# 执行命令行(脚本)参数的总个数
+* 3）$@   这个执行程序的所有参数
+* 4）$* 获取当前shell 的所有参数(注意与$@区别)
+* 5）$! 上一个执行命令的PID
+* 6）$$ 获取当前shell的PID
+* 7)  $_ 在此之前执行的命令或者脚本的最后一个参数
+* 8）$? 上一个命令的退出状态
+* 9）$n 传递给脚本或函数的参数。n 是一个数字，表示第几个参数。例如，第一个参数是$1，第二个参数是$2。
 * \$0 获取当前执行 shell 脚本的文件文件名，包括脚本路径,命令本身
 * \$n 获取当前脚本的第 n 个参数 n=1,2.....n 当 n 大于 9 时 用${10}表示。
+
+```
+$* 和 $@ 的区别
+$* 和 $@ 都表示传递给函数或脚本的所有参数，不被双引号" "包含时，都以"$1" "$2" … "$n" 的形式输出所有参数。
+
+但是当它们被双引号" "包含时，"$*" 会将所有的参数作为一个整体，以"$1 $2 … $n"的形式输出所有参数；"$@" 会将各个参数分开，以"$1" "$2" … "$n" 的形式输出所有参数。
+```
 
 ```
 [root@spring ~]# vim print.sh
@@ -520,3 +538,42 @@ After above opeation, we can use
 to check whether the installation is successful.
 ```
 
+```
+PS1变量：命令提示符设置PS1变量是用来定义命令行提示符的，看可以按照我们自己的需求来定义自己喜欢的提示符。PS1支持的选项有：\d:显示日期，格式为“星期 月 日”\H:显示完整的主机名。如默认主机名：localhost.localdomain\h:显示简写主机名。默认为：localhost\T:显示12小时制时间，格式为HH:MM:SS\t:显示24小时制时间，格式为HH:MM:SS\A:显示24小时制时间，格式为HH:MM\@:显示12小时制时间，格式为HH:MM am/pm\u:显示当前用户名\v:显示Bash的版本信息\W:显示当前所在目录的最后一个目录\w:显示当前所在目录的完整路径\#:执行的第几个命令\$:提示符。如果是root会显示提示符为“#”如果是普通用户会显示提示符为“$”选项应用实例：[root@localhost ~]# echo $PS1[\u@\h \W]\$[root@localhost ~]# PS1='[\u@\t \w]\$'[root@22:52:10 ~]#cd /usr/local/src/[root@22:52:21 /usr/local/src]#（修改提示符为用户名@当前时间 当前所在目录完整路径）这里需要注意：PS1变量的值要用单引号包含，否则设置不生效。[root@22:52:21 /usr/local/src]#PS1='[\u@\@ \h \# \W]\$'[root@11:04 下午 localhost 29 src]#（\@：时间格式是HH：MM： am/pm 、#：会显示执行了多少个命令）
+```
+
+#### 实现一个计算器
+
+```
+[root@redmine bash]# vim calculator.sh
+#!/bin/bash
+
+read -p '请输入第一个数字：' num1
+read -p '请输入运算符：' signs
+read -p '请输入第二个数字：' num2
+echo '\n'
+
+if [ $signs == '+' ] ; then
+        echo "运行结果是：$num1 + $num2 = " $(($num1 + $num2))
+elif [ $signs == '-' ] ; then
+        echo "运行结果是：$num1 - $num2 = " $(($num1 - $num2))
+elif [ $signs == 'x' ] ; then
+        echo "运行结果是：$num1 x $num2 = " $(($num1 * $num2))
+elif [ $signs == '/' ] ; then
+        echo "运行结果是：$num1 \\ $num2 = " $(($num1 / $num2))
+else
+        echo "为难我的小脑瓜了，计算不出来，我再修炼修炼"
+fi
+
+# or
+
+#!/bin/bash
+
+read -p '请输入第一个数字：' num1
+read -p '请输入运算符：' signs
+read -p '请输入第二个数字：' num2
+echo ' '
+
+echo "运行结果是：$num1 $signs $num2 = " $(($num1 $signs $num2))
+
+```

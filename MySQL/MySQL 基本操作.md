@@ -22,6 +22,8 @@ owners.
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 mysql>
+
+CREATE TABLE webservicecalls_enum (day date NOT NULL, account smallint NOT NULL, service ENUM('Linux', 'Unix', 'Windows') NOT NULL, method ENUM('GET', 'POST', 'PATCH', 'HEAD', 'DELETE', 'PUT', 'CONNECT', 'OPTIONS', 'TRACE') NOT NULL, calls int NOT NULL, items int NOT NULL, time float NOT NULL, cost decimal(9,5) NOT NULL, updated datetime, PRIMARY KEY (day, account, service, method)) ENGINE=InnoDB;
 ```
 
 ## 数据库简单操作
